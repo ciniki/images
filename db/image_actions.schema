@@ -1,0 +1,39 @@
+#
+# Description
+# -----------
+# This table store the list of actions to applied to an image.  The
+# actions will include:
+#
+# _ crop
+# _ rotate
+# _ color correct
+# - vignette
+# _ ...
+#
+# Fields
+# ------
+# image_id:			The ID of the image to apply the action to.
+# version:			The version of the image the action is for.
+# sequence:			The order of the action.
+# action:			The action to be performed on the image
+#
+#					0 - nothing
+#					1 - crop
+#					2 - 
+#
+# params:			The parameters to be used be the action.  This
+#					is a freeform field to be determined by the action.
+#
+# date_added:		The date and time the record was added.
+# last_updated:		The date and time the record was last updated.
+#
+create table image_actions (
+	image_id int not null,
+	version varchar(20) not null,
+	sequence tinyint not null,
+	action tinyint not null,
+	params varchar(500) not null,
+	date_added datetime not null,
+	last_updated datetime not null,
+	primary key (image_id, version, sequence)
+) ENGINE='InnoDB', COMMENT='v1.01';

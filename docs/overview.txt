@@ -1,0 +1,18 @@
+*alert* This module is still in development, still haven't
+decided how to store the image information and what URL's are
+required.
+
+The images module is designed to store image references which can be 
+used for anything within the framework.  The images can be uploaded to
+local disk, or stored on flickr.
+
+In the future images may be able to be stored on Amazon S3, smugmug
+and other photo hosting services.  The hosting services of images
+will be developed as needed.
+
+By hosting photos on services such as these, it increases website load
+time until we are able to store the photos locally in a cached environment.
+
+A URL to each size of photo is stored in the database for fast retrieval 
+and display.  This removes the necessity to lookup and/or calculate 
+image sizes on the fly.  As much should be predone as possible.

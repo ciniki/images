@@ -1,0 +1,27 @@
+#
+# Description
+# -----------
+# The image_details table stores information about an image, such
+# as exif data.
+#
+# - exif.manufacturer - <string>
+# - x-Resolution - <string>
+#
+# 
+#
+# Fields
+# ------
+# image_id:             The image the detail is for.
+# detail_key:           The decimal notated index key to the value.
+# detail_value:         The value of the detail.
+# date_added:           The date and time the record was added.
+# last_updated:         The date and time the record was last updated.
+#
+create table image_details (
+	image_id int not null,
+	detail_key varchar(50) not null,
+	detail_value varchar(100) not null,
+	date_added datetime not null,
+	last_updated datetime not null,
+	primary key (image_id, detail_key)
+) ENGINE=InnoDB, COMMENT='v1.01';

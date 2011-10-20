@@ -1,0 +1,17 @@
+#
+# Description
+# -----------
+# This table stores the tags associated with images.  The 
+# table structure is really basic as the only actions that
+# can be done are add or delete, no update.
+#
+# Fields
+# ------
+# image_id:			The image the tag is attached to.
+# tag:				The tag text.
+#
+create table image_tags (
+	image_id int not null,
+	tag varchar(50) not null,
+	primary key (image_id, tag)
+) ENGINE=InnoDB, COMMENT='v1.01';

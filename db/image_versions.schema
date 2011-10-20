@@ -1,0 +1,48 @@
+#
+# Description
+# -----------
+# The image_versions table stores the different versions
+# of an images, which may be used different places.  This allows
+# one source image to be used for multiple purposes.  If the image
+# is changed, that change will automatically flow through all 
+# documents the images is referenced in.
+#
+# The flags for the image are stored here because they may be different
+# between image version.  For instance, the thumbnail version will 
+# be a square even if the original version is portrait or landscape.
+#
+# *note* All thumbnails must be square.
+#
+# Fields
+# ------
+# image_id:			The ID of the image the version is applied to.
+# version:			The string for the version.  Accepted values:
+#
+#					- original
+#					- thumbnail
+#
+# flags:			Informational flags about the image. 
+#
+#					Orientation of the image is stored with the version, and
+#					if both portrait and landscape are set, then the image is square.
+#					
+#					0x01 - portrait
+#					0x02 - landscape
+#					0x03 - square
+#
+#					Other
+#					0x04 - ??
+#
+# date_added: 		The date and time the version was added to the database.
+# last_updated:		The date and time the version of the image was last changed.
+#					This is important to keep up to date, because it is used
+#					to control caching of the image both local and at the browser.
+#
+create table image_versions (
+	image_id int not null,
+	version varchar(25) not null,
+	flags tinyint unsigned not null,
+	date_added datetime not null,
+	last_updated datetime not null,
+	primary key (image_id, version)
+) ENGINE='InnoDB', COMMENT='v1.01';
