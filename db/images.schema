@@ -9,7 +9,7 @@
 # how and where the image was uploaded, determines how it is linked.  If the photo is uploaded by a 
 # user as their profile pic, then it should only be linked to the user, and the business_id should be 0.
 #
-# If the photo was uploaded through the media section of MOSSi, then it should be attached to both
+# If the photo was uploaded through the media section of ciniki-monage, then it should be attached to both
 # the user who uploaded the photo, and the business the photo was uploaded into.
 #
 # A photo could be added only linked to a business with user_id = 0, and that would give any 

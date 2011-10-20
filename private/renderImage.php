@@ -16,23 +16,23 @@
 // Returns
 // -------
 //
-function moss_images_renderImage($moss, $image_id, $version, $maxlength) {
+function ciniki_images_renderImage($ciniki, $image_id, $version, $maxlength) {
 
 
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbQuery.php');
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbFetchHashRow.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuery.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbFetchHashRow.php');
 
 	//
 	// Get the image data from the database for this version
 	//
 	$strsql = "SELECT images.title, UNIX_TIMESTAMP(image_versions.last_updated) as last_updated, images.image "
 		. "FROM images, image_versions "
-		. "WHERE images.id = '" . moss_core_dbQuote($moss, $image_id) . "' "
+		. "WHERE images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
 		. "AND images.id = image_versions.image_id "
-		. "AND image_versions.version = '" . moss_core_dbQuote($moss, $version) . "' ";
-	$rc = moss_core_dbHashQuery($moss, $strsql, 'images', 'image');	
+		. "AND image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');	
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('code'=>'339', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
 	}
@@ -52,16 +52,16 @@ function moss_images_renderImage($moss, $image_id, $version, $maxlength) {
 	// Get the actions to be applied
 	//
 	$strsql = "SELECT sequence, action, params FROM image_actions "
-		. "WHERE image_id = '" . moss_core_dbQuote($moss, $image_id) . "' "
-		. "AND version = '" . moss_core_dbQuote($moss, $version) . "' "
+		. "WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+		. "AND version = '" . ciniki_core_dbQuote($ciniki, $version) . "' "
 		. "ORDER BY sequence ";
-	$rc = moss_core_dbQuery($moss, $strsql, 'images');	
+	$rc = ciniki_core_dbQuery($ciniki, $strsql, 'images');	
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('code'=>'242', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
 	}
 	$dh = $rc['handle'];
 
-	$result = moss_core_dbFetchHashRow($moss, $dh);
+	$result = ciniki_core_dbFetchHashRow($ciniki, $dh);
 	while( isset($result['row']) ) {
 		// Crop
 		if( $result['row']['action'] == 1 ) {
@@ -70,7 +70,7 @@ function moss_images_renderImage($moss, $image_id, $version, $maxlength) {
 		}
 
 		// Grab the next row
-		$result = moss_core_dbFetchHashRow($moss, $dh);
+		$result = ciniki_core_dbFetchHashRow($ciniki, $dh);
 	}
 
 

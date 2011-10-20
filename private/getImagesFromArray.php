@@ -16,13 +16,13 @@
 // Returns
 // -------
 //
-function moss_images_getImagesFromArray($moss, $business_id, $images) {
+function ciniki_images_getImagesFromArray($ciniki, $business_id, $images) {
 
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbQuoteIDs.php');
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbHashIDQuery.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuoteIDs.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashIDQuery.php');
 	$strsql = "SELECT id, perms, type, title, caption FROM images "
-		. "WHERE business_id = '" . moss_core_dbQuote($moss, $business_id) . "' "
-		. "AND id IN (" . moss_core_dbQuoteIDs($moss, $images) . ")";
-	return moss_core_dbHashIDQuery($moss, $strsql, 'images', 'images', 'id');
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND id IN (" . ciniki_core_dbQuoteIDs($ciniki, $images) . ")";
+	return ciniki_core_dbHashIDQuery($ciniki, $strsql, 'images', 'images', 'id');
 }
 ?>

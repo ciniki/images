@@ -16,19 +16,19 @@
 // Returns
 // -------
 //
-function moss_images_getImageTitle($moss, $business_id, $image_id) {
+function ciniki_images_getImageTitle($ciniki, $business_id, $image_id) {
 
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
 
 	//
 	// Get the title of the image
 	//
 	$strsql = "SELECT images.title FROM images "
-		. "WHERE images.id = '" . moss_core_dbQuote($moss, $image_id) . "' "
-		. "AND images.business_id = '" . moss_core_dbQuote($moss, $business_id) . "' "
+		. "WHERE images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+		. "AND images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "";
-	$rc = moss_core_dbHashQuery($moss, $strsql, 'images', 'image');
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('code'=>'348', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
 	}

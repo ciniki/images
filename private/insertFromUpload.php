@@ -36,7 +36,7 @@
 // -------
 // The image ID that was added.
 //
-function moss_images_insertFromUpload($moss, $business_id, $user_id, $upload_file, $perms, $name, $caption, $force_duplicate) {
+function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload_file, $perms, $name, $caption, $force_duplicate) {
 	//
 	// Load the image into Imagick so it can be processed and uploaded
 	//
@@ -89,11 +89,11 @@ function moss_images_insertFromUpload($moss, $business_id, $user_id, $upload_fil
 	// Add code to check for duplicate image
 	//
 	$strsql = "SELECT id, title, caption FROM images "
-		. "WHERE business_id = '" . moss_core_dbQuote($moss, $business_id) . "' "
-		. "AND user_id = '" . moss_core_dbQuote($moss, $user_id) . "' "
-		. "AND checksum = '" . moss_core_dbQuote($moss, $checksum) . "' ";
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
-	$rc = moss_core_dbHashQuery($moss, $strsql, 'images', 'images');
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND user_id = '" . ciniki_core_dbQuote($ciniki, $user_id) . "' "
+		. "AND checksum = '" . ciniki_core_dbQuote($ciniki, $checksum) . "' ";
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('code'=>'329', 'msg'=>'Unable to check for duplicates', 'err'=>$rc['err']));
 	}
@@ -110,19 +110,19 @@ function moss_images_insertFromUpload($moss, $business_id, $user_id, $upload_fil
 	//
 	$strsql = "INSERT INTO images (business_id, user_id, perms, type, original_filename, "
 		. "remote_id, title, caption, checksum, date_added, last_updated, image) VALUES ( "
-		. "'" . moss_core_dbQuote($moss, $business_id) . "', "
-		. "'" . moss_core_dbQuote($moss, $user_id) . "', "
-		. "'" . moss_core_dbQuote($moss, $perms) . "', " 
-		. "'" . moss_core_dbQuote($moss, $type) . "', "
-		. "'" . moss_core_dbQuote($moss, $original_filename) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $user_id) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $perms) . "', " 
+		. "'" . ciniki_core_dbQuote($ciniki, $type) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $original_filename) . "', "
 		. "0, "
-		. "'" . moss_core_dbQuote($moss, $name). "', "
-		. "'" . moss_core_dbQuote($moss, $caption). "', "
-		. "'" . moss_core_dbQuote($moss, $checksum) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $name). "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $caption). "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $checksum) . "', "
 		. "UTC_TIMESTAMP(), UTC_TIMESTAMP(), "
-		. "'" . moss_core_dbQuote($moss, $image->getImageBlob()) . "')";
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
-	$rc = moss_core_dbInsert($moss, $strsql, 'images');
+		. "'" . ciniki_core_dbQuote($ciniki, $image->getImageBlob()) . "')";
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
+	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('code'=>'308', 'msg'=>'Unable to upload image', 'err'=>$rc['err']));	
 	}
@@ -140,11 +140,11 @@ function moss_images_insertFromUpload($moss, $business_id, $user_id, $upload_fil
 				foreach ($section as $name => $val) {
 					$strsql = "INSERT INTO image_details (image_id, detail_key, detail_value, date_added, last_updated"
 						. ") VALUES ("
-						. "'" . moss_core_dbQuote($moss, $image_id) . "', "
-						. "'" . moss_core_dbQuote($moss, "exif.$key.$name") . "', "
-						. "'" . moss_core_dbQuote($moss, $val) . "', "
+						. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
+						. "'" . ciniki_core_dbQuote($ciniki, "exif.$key.$name") . "', "
+						. "'" . ciniki_core_dbQuote($ciniki, $val) . "', "
 						. "UTC_TIMESTAMP(), UTC_TIMESTAMP())";
-					$rc = moss_core_dbInsert($moss, $strsql, 'images');
+					$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
 					if( $rc['stat'] != 'ok' ) {
 						return array('stat'=>'fail', 'err'=>array('code'=>'313', 'msg'=>'Unable to upload image', 'err'=>$rc['err']));	
 					}
@@ -186,9 +186,9 @@ function moss_images_insertFromUpload($moss, $business_id, $user_id, $upload_fil
 	//
 	$strsql = "INSERT INTO image_versions (image_id, version, flags, date_added, last_updated"
 		. ") VALUES ("
-		. "'" . moss_core_dbQuote($moss, $image_id) . "', 'original', "
-		. moss_core_dbQuote($moss, $flags) . ", UTC_TIMESTAMP(), UTC_TIMESTAMP())";
-	$rc = moss_core_dbInsert($moss, $strsql, 'images');
+		. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', 'original', "
+		. ciniki_core_dbQuote($ciniki, $flags) . ", UTC_TIMESTAMP(), UTC_TIMESTAMP())";
+	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('code'=>'315', 'msg'=>'Unable to store original image', 'err'=>$rc['err']));	
 	}
@@ -198,9 +198,9 @@ function moss_images_insertFromUpload($moss, $business_id, $user_id, $upload_fil
 	//
 	$strsql = "INSERT INTO image_versions (image_id, version, flags, date_added, last_updated"
 		. ") VALUES ("
-		. "'" . moss_core_dbQuote($moss, $image_id) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
 		. "'thumbnail', 0x03, UTC_TIMESTAMP(), UTC_TIMESTAMP())";
-	$rc = moss_core_dbInsert($moss, $strsql, 'images');
+	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('code'=>'316', 'msg'=>'Unable to store thumbnail image', 'err'=>$rc['err']));	
 	}
@@ -211,11 +211,11 @@ function moss_images_insertFromUpload($moss, $business_id, $user_id, $upload_fil
 	if( $thumb_crop_data != '' ) {
 		$strsql = "INSERT INTO image_actions (image_id, version, sequence, action, params, date_added, last_updated"
 			. ") VALUES ("
-			. "'" . moss_core_dbQuote($moss, $image_id) . "', "
+			. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
 			. "'thumbnail', 1, 1, "
-			. "'" . moss_core_dbQuote($moss, $thumb_crop_data) . "', "
+			. "'" . ciniki_core_dbQuote($ciniki, $thumb_crop_data) . "', "
 			. "UTC_TIMESTAMP(), UTC_TIMESTAMP())";
-		$rc = moss_core_dbInsert($moss, $strsql, 'images');
+		$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
 		if( $rc['stat'] != 'ok' ) {
 			return array('stat'=>'fail', 'err'=>array('code'=>'317', 'msg'=>'Unable to crop thumbnail', 'err'=>$rc['err']));	
 		}

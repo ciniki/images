@@ -16,10 +16,10 @@
 // Returns
 // -------
 //
-function moss_images_getUserImage($moss, $user_id, $image_id, $version, $maxlength) {
+function ciniki_images_getUserImage($ciniki, $user_id, $image_id, $version, $maxlength) {
 
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
-	require_once($moss['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
 
 	//
 	// Get the modification information for this image
@@ -27,12 +27,12 @@ function moss_images_getUserImage($moss, $user_id, $image_id, $version, $maxleng
 	//
 	$strsql = "SELECT images.date_added, images.last_updated, UNIX_TIMESTAMP(image_versions.last_updated) as last_updated "
 		. "FROM images, image_versions "
-		. "WHERE images.id = '" . moss_core_dbQuote($moss, $image_id) . "' "
+		. "WHERE images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
 		. "AND images.business_id = 0 "
-		. "AND images.user_id = '" . moss_core_dbQuote($moss, $user_id) . "' "
+		. "AND images.user_id = '" . ciniki_core_dbQuote($ciniki, $user_id) . "' "
 		. "AND images.id = image_versions.image_id "
-		. "AND image_versions.version = '" . moss_core_dbQuote($moss, $version) . "' ";
-	$rc = moss_core_dbHashQuery($moss, $strsql, 'images', 'image');
+		. "AND image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('code'=>'410', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
 	}
@@ -45,8 +45,8 @@ function moss_images_getUserImage($moss, $user_id, $image_id, $version, $maxleng
 	//
 	// Check headers and to see if browser has cached version.  
 	//
-	if( isset($moss['request']['If-Modified-Since']) != '' 
-		&& strtotime($moss['request']['If-Modified-Since']) >= $rc['image']['last_updated'] ) {
+	if( isset($ciniki['request']['If-Modified-Since']) != '' 
+		&& strtotime($ciniki['request']['If-Modified-Since']) >= $rc['image']['last_updated'] ) {
 	    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $rc['image']['last_updated']) . ' GMT', true, 304);
 		return array('stat'=>'ok');
 	}
@@ -60,7 +60,7 @@ function moss_images_getUserImage($moss, $user_id, $image_id, $version, $maxleng
 	//
 	// Pull the image from the database
 	//
-	require_once($moss['config']['core']['modules_dir'] . '/images/private/renderImage.php');
-	return moss_images_renderImage($moss, $image_id, $version, $maxlength);
+	require_once($ciniki['config']['core']['modules_dir'] . '/images/private/renderImage.php');
+	return ciniki_images_renderImage($ciniki, $image_id, $version, $maxlength);
 }
 ?>
