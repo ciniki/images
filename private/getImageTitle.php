@@ -30,10 +30,10 @@ function ciniki_images_getImageTitle($ciniki, $business_id, $image_id) {
 		. "";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');
 	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'348', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'348', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
 	}
 	if( !isset($rc['image']) || !isset($rc['image']['title']) ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'349', 'msg'=>'Unable to '));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'349', 'msg'=>'Unable to '));
 	}
 
 	return array('stat'=>'ok', 'title'=>$rc['image']['title']);

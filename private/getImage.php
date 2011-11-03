@@ -33,10 +33,10 @@ function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $max
 		. "AND image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');
 	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'341', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'341', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
 	}
 	if( !isset($rc['image']) ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'342', 'msg'=>'Unable to render image'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'342', 'msg'=>'Unable to render image'));
 	}
 
 	

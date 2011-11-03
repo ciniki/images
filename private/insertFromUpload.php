@@ -42,7 +42,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	//
 	$image = new Imagick($upload_file['tmp_name']);
 	if( $image == null || $image === false ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'306', 'msg'=>'Unable to upload image'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'306', 'msg'=>'Unable to upload image'));
 	}
 
 	$original_filename = $upload_file['name'];
@@ -78,7 +78,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	} elseif( $format == 'bmp' ) {
 		$type = 5;
 	} else {
-		return array('stat'=>'fail', 'err'=>array('code'=>'307', 'msg'=>'Invalid format' . $format));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'307', 'msg'=>'Invalid format' . $format));
 	}
 
 	//
@@ -95,14 +95,14 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'images');
 	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'329', 'msg'=>'Unable to check for duplicates', 'err'=>$rc['err']));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'329', 'msg'=>'Unable to check for duplicates', 'err'=>$rc['err']));
 	}
 
 	//
 	// Check if there is an image that exists, and that the force flag has not been set
 	//
 	if( isset($rc['images']) && $force_duplicate != 'yes' ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'330', 'msg'=>'Duplicate image'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'330', 'msg'=>'Duplicate image'));
 	}
 
 	//
@@ -124,10 +124,10 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
 	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
 	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'308', 'msg'=>'Unable to upload image', 'err'=>$rc['err']));	
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'308', 'msg'=>'Unable to upload image', 'err'=>$rc['err']));	
 	}
 	if( !isset($rc['insert_id']) || $rc['insert_id'] < 1 ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'309', 'msg'=>'Unable to upload image'));	
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'309', 'msg'=>'Unable to upload image'));	
 	}
 	$image_id = $rc['insert_id'];
 
@@ -146,7 +146,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 						. "UTC_TIMESTAMP(), UTC_TIMESTAMP())";
 					$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
 					if( $rc['stat'] != 'ok' ) {
-						return array('stat'=>'fail', 'err'=>array('code'=>'313', 'msg'=>'Unable to upload image', 'err'=>$rc['err']));	
+						return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'313', 'msg'=>'Unable to upload image', 'err'=>$rc['err']));	
 					}
 				}
 			}
@@ -165,7 +165,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	$height = $image->getimageheight();
 	if( $width < 1 || $height < 1 ) {
 		// Check to make sure there is some size to the image
-		return array('stat'=>'fail', 'err'=>array('code'=>'314', 'msg'=>'The image is empty'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'314', 'msg'=>'The image is empty'));
 	}
 
 	$flags = 0;
@@ -190,7 +190,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 		. ciniki_core_dbQuote($ciniki, $flags) . ", UTC_TIMESTAMP(), UTC_TIMESTAMP())";
 	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
 	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'315', 'msg'=>'Unable to store original image', 'err'=>$rc['err']));	
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'315', 'msg'=>'Unable to store original image', 'err'=>$rc['err']));	
 	}
 
 	//
@@ -202,7 +202,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 		. "'thumbnail', 0x03, UTC_TIMESTAMP(), UTC_TIMESTAMP())";
 	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
 	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('code'=>'316', 'msg'=>'Unable to store thumbnail image', 'err'=>$rc['err']));	
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'316', 'msg'=>'Unable to store thumbnail image', 'err'=>$rc['err']));	
 	}
 
 	//
@@ -217,7 +217,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 			. "UTC_TIMESTAMP(), UTC_TIMESTAMP())";
 		$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
 		if( $rc['stat'] != 'ok' ) {
-			return array('stat'=>'fail', 'err'=>array('code'=>'317', 'msg'=>'Unable to crop thumbnail', 'err'=>$rc['err']));	
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'317', 'msg'=>'Unable to crop thumbnail', 'err'=>$rc['err']));	
 		}
 	}
 
