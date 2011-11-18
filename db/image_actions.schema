@@ -27,7 +27,7 @@
 # date_added:		The date and time the record was added.
 # last_updated:		The date and time the record was last updated.
 #
-create table image_actions (
+create table ciniki_image_actions (
 	image_id int not null,
 	version varchar(20) not null,
 	sequence tinyint not null,

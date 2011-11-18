@@ -25,12 +25,12 @@ function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $max
 	// Get the modification information for this image
 	// The business_id is required to ensure a bug doesn't allow an image from another business.
 	//
-	$strsql = "SELECT images.date_added, images.last_updated, UNIX_TIMESTAMP(image_versions.last_updated) as last_updated "
-		. "FROM images, image_versions "
-		. "WHERE images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-		. "AND images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND images.id = image_versions.image_id "
-		. "AND image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
+	$strsql = "SELECT ciniki_images.date_added, ciniki_images.last_updated, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated "
+		. "FROM ciniki_images, ciniki_image_versions "
+		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+		. "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND ciniki_images.id = ciniki_image_versions.image_id "
+		. "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'341', 'msg'=>'Unable to render image', 'err'=>$rc['err']));

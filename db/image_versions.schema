@@ -38,7 +38,7 @@
 #					This is important to keep up to date, because it is used
 #					to control caching of the image both local and at the browser.
 #
-create table image_versions (
+create table ciniki_image_versions (
 	image_id int not null,
 	version varchar(25) not null,
 	flags tinyint unsigned not null,

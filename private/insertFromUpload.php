@@ -88,7 +88,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	//
 	// Add code to check for duplicate image
 	//
-	$strsql = "SELECT id, title, caption FROM images "
+	$strsql = "SELECT id, title, caption FROM ciniki_images "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND user_id = '" . ciniki_core_dbQuote($ciniki, $user_id) . "' "
 		. "AND checksum = '" . ciniki_core_dbQuote($ciniki, $checksum) . "' ";
@@ -108,7 +108,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	//
 	// Add to image table
 	//
-	$strsql = "INSERT INTO images (business_id, user_id, perms, type, original_filename, "
+	$strsql = "INSERT INTO ciniki_images (business_id, user_id, perms, type, original_filename, "
 		. "remote_id, title, caption, checksum, date_added, last_updated, image) VALUES ( "
 		. "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $user_id) . "', "
@@ -132,13 +132,13 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	$image_id = $rc['insert_id'];
 
 	//
-	// Add EXIF information to image_details
+	// Add EXIF information to ciniki_image_details
 	//
 	if( $exif !== false ) {
 		foreach ($exif as $key => $section) {
 			if( is_array($section) ) {
 				foreach ($section as $name => $val) {
-					$strsql = "INSERT INTO image_details (image_id, detail_key, detail_value, date_added, last_updated"
+					$strsql = "INSERT INTO ciniki_image_details (image_id, detail_key, detail_value, date_added, last_updated"
 						. ") VALUES ("
 						. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
 						. "'" . ciniki_core_dbQuote($ciniki, "exif.$key.$name") . "', "
@@ -182,9 +182,9 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	}
 
 	//
-	// Add the original version in the image_versions table
+	// Add the original version in the ciniki_image_versions table
 	//
-	$strsql = "INSERT INTO image_versions (image_id, version, flags, date_added, last_updated"
+	$strsql = "INSERT INTO ciniki_image_versions (image_id, version, flags, date_added, last_updated"
 		. ") VALUES ("
 		. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', 'original', "
 		. ciniki_core_dbQuote($ciniki, $flags) . ", UTC_TIMESTAMP(), UTC_TIMESTAMP())";
@@ -194,9 +194,9 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	}
 
 	//
-	// Add the thumbnail version into the image_version tables
+	// Add the thumbnail version into the ciniki_image_versions table
 	//
-	$strsql = "INSERT INTO image_versions (image_id, version, flags, date_added, last_updated"
+	$strsql = "INSERT INTO ciniki_image_versions (image_id, version, flags, date_added, last_updated"
 		. ") VALUES ("
 		. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
 		. "'thumbnail', 0x03, UTC_TIMESTAMP(), UTC_TIMESTAMP())";
@@ -206,10 +206,10 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	}
 
 	//
-	// Insert the crop action into the image_actions table for the thumbnail, if the original was not square
+	// Insert the crop action into the ciniki_image_actions table for the thumbnail, if the original was not square
 	//
 	if( $thumb_crop_data != '' ) {
-		$strsql = "INSERT INTO image_actions (image_id, version, sequence, action, params, date_added, last_updated"
+		$strsql = "INSERT INTO ciniki_image_actions (image_id, version, sequence, action, params, date_added, last_updated"
 			. ") VALUES ("
 			. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
 			. "'thumbnail', 1, 1, "

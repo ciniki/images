@@ -64,7 +64,7 @@
 # date_added:			The date and time the image was added to the database.
 # last_updated:			The date and time the image was last updated.
 #
-create table images (
+create table ciniki_images (
 	id int not null auto_increment,
 	business_id int not null,
 	user_id int not null,

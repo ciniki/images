@@ -24,9 +24,9 @@ function ciniki_images_getImageTitle($ciniki, $business_id, $image_id) {
 	//
 	// Get the title of the image
 	//
-	$strsql = "SELECT images.title FROM images "
-		. "WHERE images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-		. "AND images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+	$strsql = "SELECT ciniki_images.title FROM ciniki_images "
+		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+		. "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');
 	if( $rc['stat'] != 'ok' ) {
