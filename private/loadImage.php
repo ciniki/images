@@ -2,7 +2,7 @@
 //
 // Description
 // -----------
-// This function will render an image and apply all actions to the image
+// This function will load an image and apply all actions to the image
 // from the ciniki_image_actions table.
 //
 // Info
@@ -15,23 +15,11 @@
 // 
 // Returns
 // -------
+// returns an imageMagick image handle
 //
-function ciniki_images_loadCacheThumbnail($ciniki, $image_id, $maxlength) {
+function ciniki_images_loadImage($ciniki, $image_id, $version) {
 
-	
-	$cache_filename = $ciniki['config']['core']['modules_dir'] . '/images/cache/t' . $maxlength . '/' . $image_id . '.jpg';
 
-	//
-	// Check if cached version is there
-	//
-	if( file_exists($cache_filename) ) {
-		$imgblog = fread(fopen($cache_filename, 'r'), filesize($cache_filename));
-		return array('stat'=>'ok', 'image'=>$imgblog);
-	}
-
-	//
-	// If the file does not exist, then load information from database, and create cache file
-	//
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuery.php');
@@ -44,14 +32,13 @@ function ciniki_images_loadCacheThumbnail($ciniki, $image_id, $maxlength) {
 		. "FROM ciniki_images, ciniki_image_versions "
 		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
 		. "AND ciniki_images.id = ciniki_image_versions.image_id "
-		. "AND ciniki_image_versions.version = 'thumbnail' "
-		. "";
+		. "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');	
 	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'624', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'637', 'msg'=>'Unable to load image', 'err'=>$rc['err']));
 	}
 	if( !isset($rc['image']) ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'625', 'msg'=>'Unable to render image'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'638', 'msg'=>'Unable to load image'));
 	}
 
 	//
@@ -67,11 +54,11 @@ function ciniki_images_loadCacheThumbnail($ciniki, $image_id, $maxlength) {
 	//
 	$strsql = "SELECT sequence, action, params FROM ciniki_image_actions "
 		. "WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-		. "AND version = 'thumbnail' "
+		. "AND version = '" . ciniki_core_dbQuote($ciniki, $version) . "' "
 		. "ORDER BY sequence ";
 	$rc = ciniki_core_dbQuery($ciniki, $strsql, 'images');	
 	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'626', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'639', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
 	}
 	$dh = $rc['handle'];
 
@@ -87,25 +74,6 @@ function ciniki_images_loadCacheThumbnail($ciniki, $image_id, $maxlength) {
 		$result = ciniki_core_dbFetchHashRow($ciniki, $dh);
 	}
 
-	$image->thumbnailImage($maxlength, 0);
-
-	//
-	// Check directory exists
-	//
-	if( !file_exists(dirname($cache_filename)) ) {
-		mkdir(dirname($cache_filename));
-	}
-
-	//
-	// Write the image to the cache file
-	//
-	$h = fopen($cache_filename, 'w');
-	if( $h ) {
-		$image->setImageCompressionQuality(40);
-		fwrite($h, $image->getImageBlob());
-		fclose($h);
-	}
-
-	return array('stat'=>'ok', 'image'=>$image->getImageBlob());
+	return array('stat'=>'ok', 'image'=>$image);
 }
 ?>
