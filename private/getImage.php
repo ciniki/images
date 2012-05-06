@@ -16,7 +16,7 @@
 // Returns
 // -------
 //
-function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $maxlength) {
+function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $maxwidth, $maxheight) {
 
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
@@ -39,8 +39,6 @@ function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $max
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'342', 'msg'=>'Unable to render image'));
 	}
 
-	
-
 	//
 	// Check headers and to see if browser has cached version.  
 	//
@@ -51,7 +49,6 @@ function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $max
 		return array('stat'=>'ok');
 	}
 
-
 	//
 	// FIXME: Check the cache for a current copy
 	//
@@ -61,7 +58,7 @@ function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $max
 	// Pull the image from the database
 	//
 	require_once($ciniki['config']['core']['modules_dir'] . '/images/private/renderImage.php');
-	return ciniki_images_renderImage($ciniki, $image_id, $version, $maxlength);
+	return ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $maxheight);
 }
 
 //		Found on: http://ernieleseberg.com/2009/php-image-output-and-browser-caching/

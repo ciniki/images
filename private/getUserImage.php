@@ -61,6 +61,6 @@ function ciniki_images_getUserImage($ciniki, $user_id, $image_id, $version, $max
 	// Pull the image from the database
 	//
 	require_once($ciniki['config']['core']['modules_dir'] . '/images/private/renderImage.php');
-	return ciniki_images_renderImage($ciniki, $image_id, $version, $maxlength);
+	return ciniki_images_renderImage($ciniki, $image_id, $version, $maxlength, 0);
 }
 ?>

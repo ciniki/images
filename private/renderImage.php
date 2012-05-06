@@ -16,7 +16,7 @@
 // Returns
 // -------
 //
-function ciniki_images_renderImage($ciniki, $image_id, $version, $maxlength) {
+function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $maxheight) {
 
 
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
@@ -78,7 +78,11 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxlength) {
 	// error_log(print_r(apache_request_headers(), true));
 	// file_put_contents('/tmp/rendered_' . $rc['image']['title'], $rc['image']['image']);
 	//file_put_contents('/tmp/rendered_' . $rc['image']['title'] . ".png", $image);
-	$image->thumbnailImage($maxlength, 0);
+	if( $version == 'thumbnail' ) {
+		$image->thumbnailImage($maxwidth, $maxheight);
+	} else {
+		$image->scaleImage($maxwidth, $maxheight);
+	}
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $last_updated) . ' GMT', true, 200);
 	header("Content-type: image/jpeg");	
 
