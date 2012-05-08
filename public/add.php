@@ -91,7 +91,6 @@ function ciniki_images_add($ciniki) {
 		return $rc;
 	}
 
-	error_log('added image: ' . $image_id);
 	return array('stat'=>'ok', 'id'=>$image_id);
 }
 ?>

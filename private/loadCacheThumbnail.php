@@ -22,9 +22,30 @@ function ciniki_images_loadCacheThumbnail($ciniki, $image_id, $maxlength) {
 	$cache_filename = $ciniki['config']['core']['modules_dir'] . '/images/cache/t' . $maxlength . '/' . $image_id . '.jpg';
 
 	//
-	// Check if cached version is there
+	// Get the last updated timestamp
 	//
-	if( file_exists($cache_filename) ) {
+	$strsql = "SELECT ciniki_images.title, "
+		. "IF(ciniki_images.last_updated > ciniki_image_versions.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_image_versions.last_updated)) AS last_updated "
+		. "FROM ciniki_images, ciniki_image_versions "
+		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+		. "AND ciniki_images.id = ciniki_image_versions.image_id "
+		. "AND ciniki_image_versions.version = 'thumbnail' "
+		. "";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');	
+	if( $rc['stat'] != 'ok' ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'661', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+	}
+	if( !isset($rc['image']) ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'662', 'msg'=>'Unable to render image'));
+	}
+	$img = $rc['image'];
+
+	//
+	// Check if cached version is there, and there hasn't been any updates
+	//
+	$utc_offset = date_offset_get(new DateTime);
+	if( file_exists($cache_filename)
+		&& (filemtime($cache_filename) - $utc_offset) > $img['last_updated'] ) {
 		$imgblog = fread(fopen($cache_filename, 'r'), filesize($cache_filename));
 		return array('stat'=>'ok', 'image'=>$imgblog);
 	}
@@ -40,7 +61,7 @@ function ciniki_images_loadCacheThumbnail($ciniki, $image_id, $maxlength) {
 	//
 	// Get the image data from the database for this version
 	//
-	$strsql = "SELECT ciniki_images.title, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated, ciniki_images.image "
+	$strsql = "SELECT ciniki_images.title, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) AS last_updated, ciniki_images.image "
 		. "FROM ciniki_images, ciniki_image_versions "
 		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
 		. "AND ciniki_images.id = ciniki_image_versions.image_id "
