@@ -86,7 +86,7 @@ function ciniki_images_add($ciniki) {
 	//
 	// Commit the database changes
 	//
-    $rc = ciniki_core_dbTransactionCommit($ciniki, 'artcatalog');
+    $rc = ciniki_core_dbTransactionCommit($ciniki, 'images');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}

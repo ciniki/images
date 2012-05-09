@@ -47,8 +47,8 @@ function ciniki_images_get($ciniki) {
 	// Make sure this module is activated, and 
 	// check session user permission to run this function for this business
 	//  
-	require_once($ciniki['config']['core']['modules_dir'] . '/artcatalog/private/checkAccess.php');
-	$rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.images.get', array()); 
+	require_once($ciniki['config']['core']['modules_dir'] . '/images/private/checkAccess.php');
+	$rc = ciniki_images_checkAccess($ciniki, $args['business_id'], 'ciniki.images.get', array()); 
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
 	}
