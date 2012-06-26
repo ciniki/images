@@ -28,7 +28,9 @@ function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $max
 	$strsql = "SELECT ciniki_images.date_added, ciniki_images.last_updated, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated "
 		. "FROM ciniki_images, ciniki_image_versions "
 		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-		. "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND (ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+			. "OR (ciniki_images.business_id = 0 AND ciniki_images.user_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['user']['id']) . "') "
+			. ") "
 		. "AND ciniki_images.id = ciniki_image_versions.image_id "
 		. "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');
