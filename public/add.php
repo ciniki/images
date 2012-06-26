@@ -44,7 +44,7 @@ function ciniki_images_add($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddChangeLog.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddModuleHistory.php');
 	$rc = ciniki_core_dbTransactionStart($ciniki, 'images');
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
@@ -82,7 +82,7 @@ function ciniki_images_add($ciniki) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'659', 'msg'=>'Invalid file type'));
 	}
 	$image_id = $rc['id'];
-	
+
 	//
 	// Commit the database changes
 	//
