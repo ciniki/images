@@ -15,6 +15,13 @@
 # A photo could be added only linked to a business with user_id = 0, and that would give any 
 # owner or media manager in that business the right to edit/delete that photo.
 #
+# The binary image data is stored in the database to make it easier to transfer business information
+# from one server to another, without having to transfer files from disk.
+#
+# Images should only be stored once in the database, and referenced by the image_id multiple times if
+# different modules are using the same image.  This helps keep the database size to a minimum.  The checksum 
+# field keeps a records of crc32 checksums to make sure images are unique.
+#
 # Fields
 # ------
 # id: 					The unique ID of the photo
@@ -61,6 +68,11 @@
 #
 # caption:				The caption for the image.
 #
+# image:				The binary image data in imageMagick format ($image->getImageBlob()).
+#
+# checksum:				The crc32 checksum for the image.  This field is used to make sure
+#						duplicate images are not stored in the database.
+#
 # date_added:			The date and time the image was added to the database.
 # last_updated:			The date and time the image was last updated.
 #
@@ -71,7 +83,6 @@ create table ciniki_images (
 	perms tinyint unsigned not null,
 	type tinyint unsigned not null,
 	original_filename varchar(150) not null,
-	source tinyint unsigned not null,
 	remote_id varchar(50) not null,
 	title varchar(100) not null,
 	caption varchar(500) not null,
@@ -82,4 +93,4 @@ create table ciniki_images (
 	primary key (id),
 	index (business_id, user_id),
 	index (remote_id)
-) ENGINE=InnoDB, COMMENT='v1.01';
+) ENGINE=InnoDB, COMMENT='v1.02';

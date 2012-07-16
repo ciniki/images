@@ -1,0 +1,6 @@
+#
+# This file will upgrade the database table ciniki_images to version 1.02.
+# The source column was removed as it's not being used.
+#
+ALTER TABLE ciniki_images DROP COLUMN source;
+ALTER TABLE ciniki_images COMMENT='v1.02';
