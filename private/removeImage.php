@@ -85,7 +85,7 @@ function ciniki_images_removeImage($ciniki, $business_id, $user_id, $image_id) {
 	// Ignore the result, as we don't want to stop user updates if this fails.
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'images');
+	ciniki_businesses_updateModuleChangeDate($ciniki, $business_id, 'ciniki', 'images');
 	
 	return array('stat'=>'ok');
 }
