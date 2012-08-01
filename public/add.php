@@ -45,7 +45,7 @@ function ciniki_images_add($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddModuleHistory.php');
-	$rc = ciniki_core_dbTransactionStart($ciniki, 'images');
+	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
 	}   
@@ -74,11 +74,11 @@ function ciniki_images_add($ciniki) {
 		$_FILES['uploadfile'], 1, $_FILES['uploadfile']['name'], '', 'no');
 	// If a duplicate image is found, then use that id instead of uploading a new one
 	if( $rc['stat'] != 'ok' && $rc['err']['code'] != '330' ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'users');
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.images');
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'658', 'msg'=>'Internal Error', 'err'=>$rc['err']));
 	}
 	if( !isset($rc['id']) ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'users');
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.images');
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'659', 'msg'=>'Invalid file type'));
 	}
 	$image_id = $rc['id'];
@@ -86,7 +86,7 @@ function ciniki_images_add($ciniki) {
 	//
 	// Commit the database changes
 	//
-    $rc = ciniki_core_dbTransactionCommit($ciniki, 'images');
+    $rc = ciniki_core_dbTransactionCommit($ciniki, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}

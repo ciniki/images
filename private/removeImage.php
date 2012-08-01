@@ -35,7 +35,7 @@ function ciniki_images_removeImage($ciniki, $business_id, $user_id, $image_id) {
 		. "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND ciniki_images.user_id = '" . ciniki_core_dbQuote($ciniki, $user_id) . "' "
 		. "";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'427', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
 	}
@@ -47,31 +47,31 @@ function ciniki_images_removeImage($ciniki, $business_id, $user_id, $image_id) {
 	// Remove all information about the image
 	//
 	$strsql = "DELETE FROM ciniki_images WHERE id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
-	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'images');
+	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'422', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
 	}
 
 	$strsql = "DELETE FROM ciniki_image_versions WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
-	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'images');
+	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'423', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
 	}
 
 	$strsql = "DELETE FROM ciniki_image_actions WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
-	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'images');
+	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'424', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
 	}
 
 	$strsql = "DELETE FROM ciniki_image_details WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
-	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'images');
+	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'425', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
 	}
 
 	$strsql = "DELETE FROM ciniki_image_tags WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
-	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'images');
+	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'426', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
 	}

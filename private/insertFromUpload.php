@@ -93,7 +93,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 		. "AND user_id = '" . ciniki_core_dbQuote($ciniki, $user_id) . "' "
 		. "AND checksum = '" . ciniki_core_dbQuote($ciniki, $checksum) . "' ";
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'images');
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'329', 'msg'=>'Unable to check for duplicates', 'err'=>$rc['err']));
 	}
@@ -123,7 +123,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 		. "UTC_TIMESTAMP(), UTC_TIMESTAMP(), "
 		. "'" . ciniki_core_dbQuote($ciniki, $image->getImageBlob()) . "')";
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
-	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
+	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'308', 'msg'=>'Unable to upload image', 'err'=>$rc['err']));	
 	}
@@ -136,17 +136,17 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	// Add all the fields to the change log
 	//
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddModuleHistory.php');
-	ciniki_core_dbAddModuleHistory($ciniki, 'images', 'ciniki_image_history', $business_id, 
+	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 		1, 'ciniki_images', $image_id, 'user_id', $user_id);
-	ciniki_core_dbAddModuleHistory($ciniki, 'images', 'ciniki_image_history', $business_id, 
+	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 		1, 'ciniki_images', $image_id, 'perms', $perms);
-	ciniki_core_dbAddModuleHistory($ciniki, 'images', 'ciniki_image_history', $business_id, 
+	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 		1, 'ciniki_images', $image_id, 'type', $type);
-	ciniki_core_dbAddModuleHistory($ciniki, 'images', 'ciniki_image_history', $business_id, 
+	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 		1, 'ciniki_images', $image_id, 'original_filename', $original_filename);
-	ciniki_core_dbAddModuleHistory($ciniki, 'images', 'ciniki_image_history', $business_id, 
+	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 		1, 'ciniki_images', $image_id, 'title', $name);
-	ciniki_core_dbAddModuleHistory($ciniki, 'images', 'ciniki_image_history', $business_id, 
+	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 		1, 'ciniki_images', $image_id, 'caption', $caption);
 
 	//
@@ -162,11 +162,11 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 						. "'" . ciniki_core_dbQuote($ciniki, "exif.$key.$name") . "', "
 						. "'" . ciniki_core_dbQuote($ciniki, $val) . "', "
 						. "UTC_TIMESTAMP(), UTC_TIMESTAMP())";
-					$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
+					$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
 					if( $rc['stat'] != 'ok' ) {
 						return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'313', 'msg'=>'Unable to upload image', 'err'=>$rc['err']));	
 					}
-					ciniki_core_dbAddModuleHistory($ciniki, 'images', 'ciniki_image_history', $business_id, 
+					ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 						1, 'ciniki_image_details', $image_id, "exif.$key.$name", $val);
 				}
 			}
@@ -208,11 +208,11 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 		. ") VALUES ("
 		. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', 'original', "
 		. ciniki_core_dbQuote($ciniki, $flags) . ", UTC_TIMESTAMP(), UTC_TIMESTAMP())";
-	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
+	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'315', 'msg'=>'Unable to store original image', 'err'=>$rc['err']));	
 	}
-	ciniki_core_dbAddModuleHistory($ciniki, 'images', 'ciniki_image_history', $business_id, 
+	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 		1, 'ciniki_image_versions', "$image_id-original", 'flags', $flags);
 
 	//
@@ -222,11 +222,11 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 		. ") VALUES ("
 		. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
 		. "'thumbnail', 0x03, UTC_TIMESTAMP(), UTC_TIMESTAMP())";
-	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
+	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'316', 'msg'=>'Unable to store thumbnail image', 'err'=>$rc['err']));	
 	}
-	ciniki_core_dbAddModuleHistory($ciniki, 'images', 'ciniki_image_history', $business_id, 
+	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 		1, 'ciniki_image_versions', "$image_id-thumbnail", 'flags', 3);
 
 	//
@@ -239,13 +239,13 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 			. "'thumbnail', 1, 1, "
 			. "'" . ciniki_core_dbQuote($ciniki, $thumb_crop_data) . "', "
 			. "UTC_TIMESTAMP(), UTC_TIMESTAMP())";
-		$rc = ciniki_core_dbInsert($ciniki, $strsql, 'images');
+		$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
 		if( $rc['stat'] != 'ok' ) {
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'317', 'msg'=>'Unable to crop thumbnail', 'err'=>$rc['err']));	
 		}
-		ciniki_core_dbAddModuleHistory($ciniki, 'images', 'ciniki_image_history', $business_id, 
+		ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 			1, 'ciniki_image_actions', "$image_id-thumbnail-1", 'action', 1);
-		ciniki_core_dbAddModuleHistory($ciniki, 'images', 'ciniki_image_history', $business_id, 
+		ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 			1, 'ciniki_image_actions', "$image_id-thumbnail-1", 'params', $thumb_crop_data);
 	}
 

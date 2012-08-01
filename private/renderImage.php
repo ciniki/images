@@ -32,7 +32,7 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
 		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
 		. "AND ciniki_images.id = ciniki_image_versions.image_id "
 		. "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');	
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');	
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'339', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
 	}
@@ -55,7 +55,7 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
 		. "WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
 		. "AND version = '" . ciniki_core_dbQuote($ciniki, $version) . "' "
 		. "ORDER BY sequence ";
-	$rc = ciniki_core_dbQuery($ciniki, $strsql, 'images');	
+	$rc = ciniki_core_dbQuery($ciniki, $strsql, 'ciniki.images');	
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'242', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
 	}

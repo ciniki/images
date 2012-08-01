@@ -48,7 +48,7 @@ function ciniki_images_rotate($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbUpdate.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddModuleHistory.php');
-	$rc = ciniki_core_dbTransactionStart($ciniki, 'images');
+	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
 	}
@@ -61,7 +61,7 @@ function ciniki_images_rotate($ciniki) {
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
 		. "";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'image');
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
@@ -89,7 +89,7 @@ function ciniki_images_rotate($ciniki) {
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
 		. "";
-	$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'images');
+	$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
@@ -101,7 +101,7 @@ function ciniki_images_rotate($ciniki) {
 		. "FROM ciniki_image_actions "
 		. "WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
 		. "";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'images', 'actions');
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'actions');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
@@ -119,7 +119,7 @@ function ciniki_images_rotate($ciniki) {
 					. "AND version = '" . ciniki_core_dbQuote($ciniki, $action['version']) . "' "
 					. "AND sequence = '" . ciniki_core_dbQuote($ciniki, $action['sequence']) . "' "
 					. "";
-				$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'images');
+				$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.images');
 				if( $rc['stat'] != 'ok' ) {
 					return $rc;
 				}
@@ -130,7 +130,7 @@ function ciniki_images_rotate($ciniki) {
 	//
 	// Commit the database changes
 	//
-    $rc = ciniki_core_dbTransactionCommit($ciniki, 'images');
+    $rc = ciniki_core_dbTransactionCommit($ciniki, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}

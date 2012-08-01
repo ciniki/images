@@ -23,6 +23,6 @@ function ciniki_images_getImagesFromArray($ciniki, $business_id, $images) {
 	$strsql = "SELECT id, perms, type, title, caption FROM ciniki_images "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND id IN (" . ciniki_core_dbQuoteIDs($ciniki, $images) . ")";
-	return ciniki_core_dbHashIDQuery($ciniki, $strsql, 'images', 'images', 'id');
+	return ciniki_core_dbHashIDQuery($ciniki, $strsql, 'ciniki.images', 'images', 'id');
 }
 ?>
