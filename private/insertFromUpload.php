@@ -6,12 +6,9 @@
 // the $_FILES section of PHP.  This means the form must be submitted with
 // "application/x-www-form-urlencoded".
 //
-// Info
-// ----
-// Status: 			alpha
-//
 // Arguments
 // ---------
+// ciniki:
 // business_id:		The ID of the business the photo is attached to.
 //
 // user_id:			The user_id to attach the photo to.  This may be 
@@ -92,7 +89,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND user_id = '" . ciniki_core_dbQuote($ciniki, $user_id) . "' "
 		. "AND checksum = '" . ciniki_core_dbQuote($ciniki, $checksum) . "' ";
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'329', 'msg'=>'Unable to check for duplicates', 'err'=>$rc['err']));
@@ -122,7 +119,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 		. "'" . ciniki_core_dbQuote($ciniki, $checksum) . "', "
 		. "UTC_TIMESTAMP(), UTC_TIMESTAMP(), "
 		. "'" . ciniki_core_dbQuote($ciniki, $image->getImageBlob()) . "')";
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
 	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'308', 'msg'=>'Unable to upload image', 'err'=>$rc['err']));	
@@ -135,7 +132,7 @@ function ciniki_images_insertFromUpload($ciniki, $business_id, $user_id, $upload
 	//
 	// Add all the fields to the change log
 	//
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddModuleHistory.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
 	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 
 		1, 'ciniki_images', $image_id, 'user_id', $user_id);
 	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', $business_id, 

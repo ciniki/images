@@ -18,9 +18,9 @@
 //
 function ciniki_images_removeImage($ciniki, $business_id, $user_id, $image_id) {
 
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbDelete.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
 
 	//
 	// No transactions in here, it's assumed that the calling function is dealing with any integrity

@@ -5,13 +5,11 @@
 // This function will render an image and apply all actions to the image
 // from the ciniki_image_actions table.
 //
-// Info
-// ----
-// Status: 			defined
-//
 // Arguments
 // ---------
-// user_id: 		The user making the request
+// ciniki:
+// image_id:		The ID of the image to load.
+// maxlength:		The maximum length of either side of the image.
 // 
 // Returns
 // -------
@@ -53,10 +51,10 @@ function ciniki_images_loadCacheThumbnail($ciniki, $image_id, $maxlength) {
 	//
 	// If the file does not exist, then load information from database, and create cache file
 	//
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuery.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbFetchHashRow.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuery');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbFetchHashRow');
 
 	//
 	// Get the image data from the database for this version

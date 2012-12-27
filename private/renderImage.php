@@ -19,10 +19,10 @@
 function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $maxheight) {
 
 
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuery.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbFetchHashRow.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuery');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbFetchHashRow');
 
 	//
 	// Get the image data from the database for this version

@@ -4,10 +4,6 @@
 // -----------
 // This function will return the title of the image.
 //
-// Info
-// ----
-// Status: 			alpha
-//
 // Arguments
 // ---------
 // user_id: 		The user making the request
@@ -18,8 +14,8 @@
 //
 function ciniki_images_getImageTitle($ciniki, $business_id, $image_id) {
 
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 
 	//
 	// Get the title of the image

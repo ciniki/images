@@ -18,8 +18,8 @@
 //
 function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $maxwidth, $maxheight) {
 
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 
 	//
 	// Get the modification information for this image
@@ -59,7 +59,7 @@ function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $max
 	//
 	// Pull the image from the database
 	//
-	require_once($ciniki['config']['core']['modules_dir'] . '/images/private/renderImage.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'renderImage');
 	return ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $maxheight);
 }
 

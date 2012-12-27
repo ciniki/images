@@ -4,22 +4,21 @@
 // -----------
 // This function will return the image binary data in jpg format.
 //
-// Info
-// ----
-// Status: 			defined
-//
 // Arguments
 // ---------
-// user_id: 		The user making the request
-// 
+// ciniki:
+// user_id: 		The ID of the user making the request
+// image_id:		The ID of the image to return.
+// version:			The version of the image to return.
+// maxlength;		The maximum length for one edge of the image.
 // 
 // Returns
 // -------
 //
 function ciniki_images_getUserImage($ciniki, $user_id, $image_id, $version, $maxlength) {
 
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 
 	//
 	// Get the modification information for this image
@@ -60,7 +59,7 @@ function ciniki_images_getUserImage($ciniki, $user_id, $image_id, $version, $max
 	//
 	// Pull the image from the database
 	//
-	require_once($ciniki['config']['core']['modules_dir'] . '/images/private/renderImage.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'renderImage');
 	return ciniki_images_renderImage($ciniki, $image_id, $version, $maxlength, 0);
 }
 ?>
