@@ -24,7 +24,9 @@
 #
 # Fields
 # ------
-# id: 					The unique ID of the photo
+# id: 					The unique ID of the image.
+#
+# uuid:					The Universal Unique ID for the image.
 #
 # business_id:			The business the photo is attached to.  A profile pic for a user 
 #						should not be attached to the business, it should only be attached
@@ -78,6 +80,7 @@
 #
 create table ciniki_images (
 	id int not null auto_increment,
+	uuid char(36) not null,
 	business_id int not null,
 	user_id int not null,
 	perms tinyint unsigned not null,
@@ -92,5 +95,6 @@ create table ciniki_images (
 	last_updated datetime not null,
 	primary key (id),
 	index (business_id, user_id),
-	index (remote_id)
-) ENGINE=InnoDB, COMMENT='v1.02';
+	index (remote_id),
+	index uuid (business_id, uuid, last_updated)
+) ENGINE=InnoDB, COMMENT='v1.03';
