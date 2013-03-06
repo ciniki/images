@@ -1,0 +1,9 @@
+#
+# This file will add the uuid to ciniki_images
+# which is required for the sync to work.
+#
+ALTER TABLE ciniki_image_details DROP PRIMARY KEY;
+ALTER TABLE ciniki_image_details ADD COLUMN business_id int not null FIRST;
+UPDATE ciniki_image_details SET business_id = (SELECT business_id FROM ciniki_images WHERE ciniki_images.id = ciniki_image_details.image_id);
+ALTER TABLE ciniki_image_details ADD PRIMARY KEY(business_id, image_id, detail_key);
+ALTER TABLE ciniki_image_details COMMENT='v1.02';

@@ -70,11 +70,11 @@ function ciniki_images_removeImage($ciniki, $business_id, $user_id, $image_id) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'425', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
 	}
 
-	$strsql = "DELETE FROM ciniki_image_tags WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
-	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
-	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'426', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
-	}
+//	$strsql = "DELETE FROM ciniki_image_tags WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
+//	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
+//	if( $rc['stat'] != 'ok' ) {
+//		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'426', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
+//	}
 
 	//
 	// FIXME: Remove any cache versions of the image
