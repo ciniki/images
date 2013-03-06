@@ -16,7 +16,7 @@
 // Returns
 // -------
 //
-function ciniki_images_removeImage($ciniki, $business_id, $user_id, $image_id) {
+function ciniki_images_removeImage(&$ciniki, $business_id, $user_id, $image_id) {
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
@@ -29,7 +29,8 @@ function ciniki_images_removeImage($ciniki, $business_id, $user_id, $image_id) {
 	//
 	// Double check information before deleting.
 	//
-	$strsql = "SELECT ciniki_images.date_added, ciniki_images.last_updated "
+	$strsql = "SELECT ciniki_images.uuid, "
+		. "ciniki_images.date_added, ciniki_images.last_updated "
 		. "FROM ciniki_images "
 		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
 		. "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
@@ -42,6 +43,7 @@ function ciniki_images_removeImage($ciniki, $business_id, $user_id, $image_id) {
 	if( !isset($rc['image']) ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'421', 'msg'=>'Unable to remove image'));
 	}
+	$image = $rc['image'];
 
 	//
 	// Remove all information about the image
@@ -52,12 +54,19 @@ function ciniki_images_removeImage($ciniki, $business_id, $user_id, $image_id) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'422', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
 	}
 
+	// FIXME: Add history
+	$ciniki['syncqueue'][] = array('push'=>'ciniki.images.image',
+		'args'=>array('delete_uuid'=>$image['uuid'], 'delete_id'=>$image_id));
+
+	
+	// FIXME: Select uuid's removed for sync push
 	$strsql = "DELETE FROM ciniki_image_versions WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
 	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'423', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
 	}
 
+	// FIXME: Select uuid's removed for sync push
 	$strsql = "DELETE FROM ciniki_image_actions WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
 	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {

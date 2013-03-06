@@ -15,7 +15,7 @@
 // -------
 // <rsp stat='ok' id='34' />
 //
-function ciniki_images_add($ciniki) {
+function ciniki_images_add(&$ciniki) {
     //  
     // Find all the required and optional arguments
     //  
@@ -94,13 +94,6 @@ function ciniki_images_add($ciniki) {
 		return $rc;
 	}
 
-	//
-	// Update the last_change date in the business modules
-	// Ignore the result, as we don't want to stop user updates if this fails.
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'images');
-	
 	return array('stat'=>'ok', 'id'=>$image_id);
 }
 ?>

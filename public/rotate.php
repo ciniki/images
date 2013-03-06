@@ -20,7 +20,7 @@
 // -------
 // <rsp stat='ok' id='34' />
 //
-function ciniki_images_rotate($ciniki) {
+function ciniki_images_rotate(&$ciniki) {
     //  
     // Find all the required and optional arguments
 	// FIXME: Allow rotate to apply to only a certain version, currently applies to all versions
@@ -101,11 +101,13 @@ function ciniki_images_rotate($ciniki) {
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
+	$ciniki['syncqueue'][] = array('push'=>'ciniki.images.image',
+		'args'=>array('id'=>$args['image_id']));
 		
 	//
 	// Update the crop parameters for each version
 	//
-	$strsql = "SELECT image_id, version, sequence, action, params "
+	$strsql = "SELECT id, image_id, version, sequence, action, params "
 		. "FROM ciniki_image_actions "
 		. "WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
 		. "";
@@ -131,6 +133,9 @@ function ciniki_images_rotate($ciniki) {
 				if( $rc['stat'] != 'ok' ) {
 					return $rc;
 				}
+				// FIXME: Add history log for this action
+				$ciniki['syncqueue'][] = array('push'=>'ciniki.images.action',
+					'args'=>array('id'=>$action['id']));
 			}
 		}
 	}
