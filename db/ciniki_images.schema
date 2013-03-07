@@ -97,4 +97,4 @@ create table ciniki_images (
 	index (business_id, user_id),
 	index (remote_id),
 	index uuid (business_id, uuid, last_updated)
-) ENGINE=InnoDB, COMMENT='v1.03';
+) ENGINE=InnoDB, COMMENT='v1.04';

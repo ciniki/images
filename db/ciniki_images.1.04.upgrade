@@ -1,0 +1,5 @@
+#
+# The uuid update was forgotten for ciniki_images 1.03
+#
+UPDATE ciniki_images SET uuid = UUID();
+ALTER TABLE ciniki_images COMMENT='v1.04';
