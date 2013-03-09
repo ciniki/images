@@ -33,9 +33,10 @@ function ciniki_images_removeImage(&$ciniki, $business_id, $user_id, $image_id) 
 		. "ciniki_images.date_added, ciniki_images.last_updated "
 		. "FROM ciniki_images "
 		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-		. "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND ciniki_images.user_id = '" . ciniki_core_dbQuote($ciniki, $user_id) . "' "
-		. "";
+		. "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' ";
+	if( $user_id > 0 ) {	
+		$strsql .= "AND ciniki_images.user_id = '" . ciniki_core_dbQuote($ciniki, $user_id) . "' ";
+	}
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'427', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
@@ -44,6 +45,21 @@ function ciniki_images_removeImage(&$ciniki, $business_id, $user_id, $image_id) 
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'421', 'msg'=>'Unable to remove image'));
 	}
 	$image = $rc['image'];
+
+	//
+	// Check there are no references to the image before deleting
+	//
+	$strsql = "SELECT 'refs', COUNT(*) AS num "
+		. "FROM ciniki_image_refs "
+		. "WHERE ciniki_image_refs.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND ciniki_image_refs.image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'refs');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( isset($rc['refs']) && $rc['refs']['num'] > 0 ) {
+		return array('stat'=>'warn', 'err'=>array('pkg'=>'ciniki', 'code'=>'50', 'msg'=>'Image still has references, will not be deleted'));
+	}
 
 	//
 	// Remove all information about the image
