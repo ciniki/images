@@ -62,7 +62,6 @@ function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $max
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'renderImage');
 	return ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $maxheight);
 }
-
 //		Found on: http://ernieleseberg.com/2009/php-image-output-and-browser-caching/
 //		
 //		// Return the requested graphic file to the browser
