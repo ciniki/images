@@ -67,11 +67,13 @@ function ciniki_images_refClear(&$ciniki, $business_id, $args) {
 			'args'=>array('delete_uuid'=>$ref['uuid'], 'delete_id'=>$ref['id']));
 
 		//
-		// Remove the image if no more references
+		// Remove the image if no more references, and image was not 0.
 		//
-		$rc = ciniki_images_removeImage($ciniki, $business_id, 0, $ref['image_id']);
-		if( $rc['stat'] != 'ok' && $rc['stat'] != 'warn' ) {
-			return $rc;
+		if( $ref['image_id'] > 0 ) {
+			$rc = ciniki_images_removeImage($ciniki, $business_id, 0, $ref['image_id']);
+			if( $rc['stat'] != 'ok' && $rc['stat'] != 'warn' ) {
+				return $rc;
+			}
 		}
 	}
 
