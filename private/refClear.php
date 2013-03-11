@@ -27,15 +27,19 @@ function ciniki_images_refClear(&$ciniki, $business_id, $args) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'905', 'msg'=>'No reference object id specified'));
 	}
 
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'removeImage');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
+
 	//
 	// Grab the uuid of the reference
 	//
-	$strsql = "SELECT id, uuid FROM ciniki_image_refs "
+	$strsql = "SELECT id, uuid, image_id FROM ciniki_image_refs "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND object = '" . ciniki_core_dbQuote($ciniki, $args['object']) . "' "
 		. "AND object_id = '" . ciniki_core_dbQuote($ciniki, $args['object_id']) . "' "
 		. "";
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'ref');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -53,7 +57,6 @@ function ciniki_images_refClear(&$ciniki, $business_id, $args) {
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 			. "AND id = '" . ciniki_core_dbQuote($ciniki, $ref['id']) . "' "
 			. "";
-		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
 		$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
 		if( $rc['stat'] != 'ok' ) {
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'908', 'msg'=>'Unable to remove image reference', 'err'=>$rc['err']));	
@@ -62,6 +65,14 @@ function ciniki_images_refClear(&$ciniki, $business_id, $args) {
 			$business_id, 3, 'ciniki_image_refs', $ref['id'], '*', '');
 		$ciniki['syncqueue'][] = array('push'=>'ciniki.images.ref',
 			'args'=>array('delete_uuid'=>$ref['uuid'], 'delete_id'=>$ref['id']));
+
+		//
+		// Remove the image if no more references
+		//
+		$rc = ciniki_images_removeImage($ciniki, $business_id, 0, $ref['image_id']);
+		if( $rc['stat'] != 'ok' && $rc['stat'] != 'warn' ) {
+			return $rc;
+		}
 	}
 
 	//
