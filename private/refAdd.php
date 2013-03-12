@@ -39,10 +39,13 @@ function ciniki_images_refAdd(&$ciniki, $business_id, $args) {
 	//       of in the calling function
 	//
 
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUUID');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
+
 	//
 	// Get a new UUID
 	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUUID');
 	$rc = ciniki_core_dbUUID($ciniki, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -62,7 +65,6 @@ function ciniki_images_refAdd(&$ciniki, $business_id, $args) {
 		. "'" . ciniki_core_dbQuote($ciniki, $args['object_id']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['object_field']) . "', "
 		. "UTC_TIMESTAMP(), UTC_TIMESTAMP())";
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
 	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'477', 'msg'=>'Unable to save image reference', 'err'=>$rc['err']));	
