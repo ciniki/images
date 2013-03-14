@@ -28,7 +28,7 @@
 # last_updated:		The date and time the record was last updated.
 #
 create table ciniki_image_actions (
-	id int not null auto_increment,
+	id int not null auto_increment PRIMARY KEY,
 	uuid char(36) not null,
 	business_id int not null,
 	image_id int not null,
@@ -38,7 +38,6 @@ create table ciniki_image_actions (
 	params varchar(500) not null,
 	date_added datetime not null,
 	last_updated datetime not null,
-	primary key (image_id),
 	unique index image_id (image_id, version, sequence),
 	index uuid (business_id, uuid, last_updated)
 ) ENGINE='InnoDB', COMMENT='v1.02';

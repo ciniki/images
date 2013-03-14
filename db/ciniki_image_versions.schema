@@ -39,7 +39,7 @@
 #					to control caching of the image both local and at the browser.
 #
 create table ciniki_image_versions (
-	id int not null auto_increment,
+	id int not null auto_increment PRIMARY KEY,
 	uuid char(36) not null,
 	business_id int not null,
 	image_id int not null,
@@ -47,7 +47,6 @@ create table ciniki_image_versions (
 	flags tinyint unsigned not null,
 	date_added datetime not null,
 	last_updated datetime not null,
-	primary key (id),
-	unique index (image_id, version),
+	unique index image_id (image_id, version),
 	index uuid (business_id, uuid, last_updated)
 ) ENGINE='InnoDB', COMMENT='v1.02';
