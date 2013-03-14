@@ -67,7 +67,7 @@ function ciniki_images_refAdd(&$ciniki, $business_id, $args) {
 		. "UTC_TIMESTAMP(), UTC_TIMESTAMP())";
 	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'477', 'msg'=>'Unable to save image reference', 'err'=>$rc['err']));	
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'487', 'msg'=>'Unable to save image reference', 'err'=>$rc['err']));	
 	}
 	$ref_id = $rc['insert_id'];
 	$changelog_fields = array(

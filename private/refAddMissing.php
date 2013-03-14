@@ -28,10 +28,10 @@ function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'905', 'msg'=>'No reference object id specified'));
 	}
 	if( !isset($args['object_id_field']) || $args['object_id_field'] == '' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'905', 'msg'=>'No reference object id specified'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'909', 'msg'=>'No reference object id specified'));
 	}
 	if( !isset($args['object_field']) || $args['object_field'] == '' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'905', 'msg'=>'No reference object id specified'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'910', 'msg'=>'No reference object id specified'));
 	}
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
