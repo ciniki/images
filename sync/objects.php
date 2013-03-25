@@ -59,6 +59,17 @@ function ciniki_images_sync_objects($ciniki, &$sync, $business_id, $args) {
 			),
 		'history_table'=>'ciniki_image_history',
 		);
+	$objects['ref'] = array(
+		'name'=>'Image References',
+		'table'=>'ciniki_image_refs',
+		'fields'=>array(
+			'image_id'=>array('ref'=>'ciniki.images.image'),
+			'object'=>array(),
+			'object_id'=>array('oref'=>'object'),
+			'object_field'=>array(),
+			),
+		'history_table'=>'ciniki_image_history',
+		);
 	
 	return array('stat'=>'ok', 'objects'=>$objects);
 }
