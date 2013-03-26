@@ -76,6 +76,16 @@ function ciniki_images_dbIntegrityCheck($ciniki) {
 		}
 		
 		//
+		// Check ciniki_image_refs for missing history
+		//
+		$rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.images', $args['business_id'],
+			'ciniki_image_refs', 'ciniki_image_history', 
+			array('uuid', 'image_id','object','object_id', 'object_field'));
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+		
+		//
 		// Check for items missing a UUID
 		//
 		$strsql = "UPDATE ciniki_image_history SET uuid = UUID() WHERE uuid = ''";

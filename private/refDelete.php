@@ -59,7 +59,6 @@ function ciniki_images_refDelete(&$ciniki, $business_id, $args) {
 		. "AND object = '" . ciniki_core_dbQuote($ciniki, $args['object']) . "' "
 		. "AND object_id = '" . ciniki_core_dbQuote($ciniki, $args['object_id']) . "' "
 		. "";
-	error_log($strsql);
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
 	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
