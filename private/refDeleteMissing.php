@@ -49,7 +49,6 @@ function ciniki_images_refDeleteMissing(&$ciniki, $module, $business_id, $args) 
 			. "AND ciniki_image_refs.object_id = " . $args['object_table'] . "." . $args['object_id_field'] . " "
 			. ") "
 		. "";
-	error_log($strsql);
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'ref');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -71,7 +70,6 @@ function ciniki_images_refDeleteMissing(&$ciniki, $module, $business_id, $args) 
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 			. "AND id = '" . ciniki_core_dbQuote($ciniki, $ref_id) . "' "
 			. "";
-		error_log($strsql);
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
 		$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
 		if( $rc['stat'] != 'ok' ) {
