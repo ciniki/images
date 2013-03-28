@@ -22,16 +22,16 @@
 function ciniki_images_refDeleteMissing(&$ciniki, $module, $business_id, $args) {
 
 	if( !isset($args['object']) || $args['object'] == '' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'904', 'msg'=>'No reference object specified'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'953', 'msg'=>'No reference object specified'));
 	}
 	if( !isset($args['object_table']) || $args['object_table'] == '' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'905', 'msg'=>'No reference object id specified'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'954', 'msg'=>'No reference object id specified'));
 	}
 	if( !isset($args['object_id_field']) || $args['object_id_field'] == '' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'909', 'msg'=>'No reference object id specified'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'955', 'msg'=>'No reference object id specified'));
 	}
 	if( !isset($args['object_field']) || $args['object_field'] == '' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'910', 'msg'=>'No reference object id specified'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'956', 'msg'=>'No reference object id specified'));
 	}
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
@@ -73,7 +73,7 @@ function ciniki_images_refDeleteMissing(&$ciniki, $module, $business_id, $args) 
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
 		$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.images');
 		if( $rc['stat'] != 'ok' ) {
-			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'947', 'msg'=>'Unable to remove image reference', 'err'=>$rc['err']));	
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'957', 'msg'=>'Unable to remove image reference', 'err'=>$rc['err']));	
 		}
 		ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
 			$business_id, 3, 'ciniki_image_refs', $ref_id, '*', '');
