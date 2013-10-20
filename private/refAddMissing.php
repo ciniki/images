@@ -57,7 +57,7 @@ function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
 	//
 	// Load existing refs
 	//
-	$strsql = "SELECT CONCAT_WS('-', object_id, image_id) AS refid "
+	$strsql = "SELECT CONCAT_WS('-', object_id, ref_id) AS refid "
 		. "FROM ciniki_image_refs "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND object = '" . ciniki_core_dbQuote($ciniki, $args['object']) . "' "
@@ -77,7 +77,7 @@ function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
 		// Check if ref already exists
 		if( !isset($refs[$item[$args['object_id_field']] . '-' . $item[$args['object_field']]]) ) {
 			$new_item = array(
-				'image_id'=>$item[$args['object_field']],
+				'ref_id'=>$item[$args['object_field']],
 				'object'=>$args['object'],
 				'object_id'=>$item[$args['object_id_field']],
 				'object_field'=>$args['object_field'],
@@ -96,12 +96,12 @@ function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
 			//
 			// Add the reference
 			//
-			$strsql = "INSERT INTO ciniki_image_refs (uuid, business_id, image_id, "
+			$strsql = "INSERT INTO ciniki_image_refs (uuid, business_id, ref_id, "
 				. "object, object_id, object_field, date_added, last_updated"
 				. ") VALUES ("
 				. "'" . ciniki_core_dbQuote($ciniki, $new_item['uuid']) . "', "
 				. "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
-				. "'" . ciniki_core_dbQuote($ciniki, $new_item['image_id']) . "', "
+				. "'" . ciniki_core_dbQuote($ciniki, $new_item['ref_id']) . "', "
 				. "'" . ciniki_core_dbQuote($ciniki, $new_item['object']) . "', "
 				. "'" . ciniki_core_dbQuote($ciniki, $new_item['object_id']) . "', "
 				. "'" . ciniki_core_dbQuote($ciniki, $new_item['object_field']) . "', "
@@ -114,7 +114,7 @@ function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
 			$ref_id = $rc['insert_id'];
 			$changelog_fields = array(
 				'uuid', 
-				'image_id',
+				'ref_id',
 				'object',
 				'object_id',
 				'object_field',

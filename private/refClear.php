@@ -35,7 +35,7 @@ function ciniki_images_refClear(&$ciniki, $business_id, $args) {
 	//
 	// Grab the uuid of the reference
 	//
-	$strsql = "SELECT id, uuid, image_id FROM ciniki_image_refs "
+	$strsql = "SELECT id, uuid, ref_id FROM ciniki_image_refs "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND object = '" . ciniki_core_dbQuote($ciniki, $args['object']) . "' "
 		. "AND object_id = '" . ciniki_core_dbQuote($ciniki, $args['object_id']) . "' "
@@ -69,8 +69,8 @@ function ciniki_images_refClear(&$ciniki, $business_id, $args) {
 		//
 		// Remove the image if no more references, and image was not 0.
 		//
-		if( $ref['image_id'] > 0 ) {
-			$rc = ciniki_images_removeImage($ciniki, $business_id, 0, $ref['image_id']);
+		if( $ref['ref_id'] > 0 ) {
+			$rc = ciniki_images_removeImage($ciniki, $business_id, 0, $ref['ref_id']);
 			if( $rc['stat'] != 'ok' && $rc['stat'] != 'warn' ) {
 				return $rc;
 			}

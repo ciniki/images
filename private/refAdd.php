@@ -10,7 +10,7 @@
 //
 // args:			The arguments for adding the reference.
 //
-// 					image_id - The ID of the image being referenced.
+// 					ref_id - The ID of the image being referenced.
 // 					object - The object that is referring to the image.
 // 					object_id - The ID of the object that is referrign to the image.
 // 					object_field - The table field the image ID is stored in the reference.
@@ -55,7 +55,7 @@ function ciniki_images_refAdd(&$ciniki, $business_id, $args) {
 	//
 	// Add the reference
 	//
-	$strsql = "INSERT INTO ciniki_image_refs (uuid, business_id, image_id, "
+	$strsql = "INSERT INTO ciniki_image_refs (uuid, business_id, ref_id, "
 		. "object, object_id, object_field, date_added, last_updated"
 		. ") VALUES ("
 		. "'" . ciniki_core_dbQuote($ciniki, $args['uuid']) . "', "
@@ -72,7 +72,6 @@ function ciniki_images_refAdd(&$ciniki, $business_id, $args) {
 	$ref_id = $rc['insert_id'];
 	$changelog_fields = array(
 		'uuid', 
-		'image_id',
 		'object',
 		'object_id',
 		'object_field',
@@ -82,6 +81,10 @@ function ciniki_images_refAdd(&$ciniki, $business_id, $args) {
 			ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
 				$business_id, 1, 'ciniki_image_refs', $ref_id, $field, $args[$field]);
 		}
+	}
+	if( isset($args['image_id']) && $args['image_id'] != '' ) {
+		ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
+			$business_id, 1, 'ciniki_image_refs', $ref_id, 'ref_id', $args['image_id']);
 	}
 	$ciniki['syncqueue'][] = array('push'=>'ciniki.images.ref',
 		'args'=>array('id'=>$ref_id));

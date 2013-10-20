@@ -53,7 +53,7 @@ function ciniki_images_removeImage(&$ciniki, $business_id, $user_id, $image_id) 
 	$strsql = "SELECT 'refs', COUNT(*) AS num "
 		. "FROM ciniki_image_refs "
 		. "WHERE ciniki_image_refs.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND ciniki_image_refs.image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
+		. "AND ciniki_image_refs.ref_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'refs');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;

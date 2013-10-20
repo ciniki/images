@@ -35,7 +35,7 @@ function ciniki_images_refDelete(&$ciniki, $business_id, $args) {
 	//
 	$strsql = "SELECT id, uuid FROM ciniki_image_refs "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND image_id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
+		. "AND ref_id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
 		. "AND object = '" . ciniki_core_dbQuote($ciniki, $args['object']) . "' "
 		. "AND object_id = '" . ciniki_core_dbQuote($ciniki, $args['object_id']) . "' "
 		. "";
@@ -55,7 +55,7 @@ function ciniki_images_refDelete(&$ciniki, $business_id, $args) {
 	//
 	$strsql = "DELETE FROM ciniki_image_refs "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND image_id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
+		. "AND ref_id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
 		. "AND object = '" . ciniki_core_dbQuote($ciniki, $args['object']) . "' "
 		. "AND object_id = '" . ciniki_core_dbQuote($ciniki, $args['object_id']) . "' "
 		. "";
