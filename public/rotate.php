@@ -27,9 +27,9 @@ function ciniki_images_rotate(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-        'image_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No image specified'), 
-        'direction'=>array('required'=>'no', 'default'=>'right', 'blank'=>'no', 'errmsg'=>'No direction specified'), 
+        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'image_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Image'), 
+        'direction'=>array('required'=>'no', 'default'=>'right', 'blank'=>'no', 'name'=>'Direction'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
