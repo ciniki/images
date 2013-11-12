@@ -80,7 +80,7 @@ function ciniki_images_dbIntegrityCheck($ciniki) {
 		//
 		$rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.images', $args['business_id'],
 			'ciniki_image_refs', 'ciniki_image_history', 
-			array('uuid', 'image_id','object','object_id', 'object_field'));
+			array('uuid', 'ref_id','object','object_id', 'object_field'));
 		if( $rc['stat'] != 'ok' ) {
 			return $rc;
 		}
