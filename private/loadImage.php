@@ -17,7 +17,7 @@
 // -------
 // returns an imageMagick image handle
 //
-function ciniki_images_loadImage($ciniki, $image_id, $version) {
+function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
 
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
@@ -31,6 +31,7 @@ function ciniki_images_loadImage($ciniki, $image_id, $version) {
 	$strsql = "SELECT ciniki_images.title, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated, ciniki_images.image "
 		. "FROM ciniki_images, ciniki_image_versions "
 		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+		. "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND ciniki_images.id = ciniki_image_versions.image_id "
 		. "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');	
@@ -52,8 +53,10 @@ function ciniki_images_loadImage($ciniki, $image_id, $version) {
 	//
 	// Get the actions to be applied
 	//
-	$strsql = "SELECT sequence, action, params FROM ciniki_image_actions "
+	$strsql = "SELECT sequence, action, params "
+		. "FROM ciniki_image_actions "
 		. "WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+		. "AND business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND version = '" . ciniki_core_dbQuote($ciniki, $version) . "' "
 		. "ORDER BY sequence ";
 	$rc = ciniki_core_dbQuery($ciniki, $strsql, 'ciniki.images');	
