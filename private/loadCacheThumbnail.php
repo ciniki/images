@@ -59,7 +59,9 @@ function ciniki_images_loadCacheThumbnail($ciniki, $image_id, $maxlength) {
 	//
 	// Get the image data from the database for this version
 	//
-	$strsql = "SELECT ciniki_images.title, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) AS last_updated, ciniki_images.image "
+	$strsql = "SELECT ciniki_images.title, "
+		. "UNIX_TIMESTAMP(ciniki_image_versions.last_updated) AS last_updated, "
+		. "ciniki_images.image "
 		. "FROM ciniki_images, ciniki_image_versions "
 		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
 		. "AND ciniki_images.id = ciniki_image_versions.image_id "
