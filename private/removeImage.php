@@ -24,6 +24,16 @@ function ciniki_images_removeImage(&$ciniki, $business_id, $user_id, $image_id) 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
 
 	//
+	// Get the business cache directory
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'cacheDir');
+	$rc = ciniki_businesses_cacheDir($ciniki, $business_id);
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$business_cache_dir = $rc['cache_dir'];
+
+	//
 	// No transactions in here, it's assumed that the calling function is dealing with any integrity
 	//
 
@@ -148,8 +158,18 @@ function ciniki_images_removeImage(&$ciniki, $business_id, $user_id, $image_id) 
 	}
 
 	//
-	// FIXME: Remove any cache versions of the image
+	// Remove any cache versions of the image
 	//
+	$cache_dir = $business_cache_dir . '/ciniki.images/'
+		. $img_uuid[0] . '/' . $img_uuid;
+	$files = array_diff(scandir($cache_dir), array('.','..')); 
+	foreach ($files as $file) { 
+		if( is_dir("$cache_dir/$file") ) {
+			error_log("CACHE-ERR: Unable to remove cache files, directory exists: $cache_dir/$file");
+		}
+		unlink("$cache_dir/$file");
+	} 
+	rmdir($cache_dir);
 
 	//
 	// Update the last_change date in the business modules
