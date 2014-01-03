@@ -113,6 +113,10 @@ foreach($images as $iid => $image) {
 //		ciniki_images_loadCacheThumbnail($ciniki, $image['business_id'], $image['image_id'], 300);
 //	}
 	// Single page sizes
+	if( !file_exists("$cache_dir/o2000_2000.jpg")
+		|| (filemtime("$cache_dir/o2000_2000.jpg") - $utc_offset) < $image['last_updated'] ) {
+		ciniki_images_loadCacheOriginal($ciniki, $image['business_id'], $image['image_id'], 2000, 2000);
+	}
 
 }
 
