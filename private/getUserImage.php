@@ -24,7 +24,8 @@ function ciniki_images_getUserImage($ciniki, $user_id, $image_id, $version, $max
 	// Get the modification information for this image
 	// The business_id is required to ensure a bug doesn't allow an image from another business.
 	//
-	$strsql = "SELECT ciniki_images.date_added, ciniki_images.last_updated, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated "
+	$strsql = "SELECT ciniki_images.date_added, ciniki_images.last_updated, "
+		. "UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated "
 		. "FROM ciniki_images, ciniki_image_versions "
 		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
 		. "AND ciniki_images.business_id = 0 "
@@ -39,8 +40,6 @@ function ciniki_images_getUserImage($ciniki, $user_id, $image_id, $version, $max
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'411', 'msg'=>'Unable to render image'));
 	}
 
-	
-
 	//
 	// Check headers and to see if browser has cached version.  
 	//
@@ -49,7 +48,6 @@ function ciniki_images_getUserImage($ciniki, $user_id, $image_id, $version, $max
 	    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $rc['image']['last_updated']) . ' GMT', true, 304);
 		return array('stat'=>'ok');
 	}
-
 
 	//
 	// FIXME: Check the cache for a current copy

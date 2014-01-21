@@ -60,6 +60,7 @@ function ciniki_images_removeImage(&$ciniki, $business_id, $user_id, $image_id) 
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'421', 'msg'=>'Unable to remove image'));
 	}
 	$image = $rc['image'];
+	$img_uuid = $rc['image']['uuid'];
 
 	//
 	// Check there are no references to the image before deleting
@@ -166,14 +167,16 @@ function ciniki_images_removeImage(&$ciniki, $business_id, $user_id, $image_id) 
 	//
 	$cache_dir = $business_cache_dir . '/ciniki.images/'
 		. $img_uuid[0] . '/' . $img_uuid;
-	$files = array_diff(scandir($cache_dir), array('.','..')); 
-	foreach ($files as $file) { 
-		if( is_dir("$cache_dir/$file") ) {
-			error_log("CACHE-ERR: Unable to remove cache files, directory exists: $cache_dir/$file");
-		}
-		unlink("$cache_dir/$file");
-	} 
-	rmdir($cache_dir);
+	if( is_dir($cache_dir) ) {
+		$files = array_diff(scandir($cache_dir), array('.','..')); 
+		foreach ($files as $file) { 
+			if( is_dir("$cache_dir/$file") ) {
+				error_log("CACHE-ERR: Unable to remove cache files, directory exists: $cache_dir/$file");
+			}
+			unlink("$cache_dir/$file");
+		} 
+		rmdir($cache_dir);
+	}
 
 	//
 	// Update the last_change date in the business modules
