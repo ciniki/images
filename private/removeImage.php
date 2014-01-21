@@ -52,7 +52,11 @@ function ciniki_images_removeImage(&$ciniki, $business_id, $user_id, $image_id) 
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'427', 'msg'=>'Unable to remove image', 'err'=>$rc['err']));
 	}
-	if( !isset($rc['image']) ) {
+	if( count($rc['rows']) == 0 ) {
+		return array('stat'=>'ok');
+	}
+	if( !isset($rc['image']) && count($rc['rows']) == 0 ) {
+		// If the image is not found, then it was already deleted.
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'421', 'msg'=>'Unable to remove image'));
 	}
 	$image = $rc['image'];
