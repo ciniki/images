@@ -27,7 +27,9 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
 	//
 	// Get the image data from the database for this version
 	//
-	$strsql = "SELECT ciniki_images.title, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated, ciniki_images.image "
+	$strsql = "SELECT ciniki_images.title, "
+		. "UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated, ciniki_images.image, "
+		. "ciniki_images.original_filename "
 		. "FROM ciniki_images, ciniki_image_versions "
 		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
 		. "AND ciniki_images.id = ciniki_image_versions.image_id "
@@ -46,6 +48,8 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
 	$image = new Imagick();
 	$image->readImageBlob($rc['image']['image']);
 	$last_updated = $rc['image']['last_updated'];
+	$title = $rc['image']['title'];
+	$original_filename = $rc['image']['original_filename'];
 	$image->setImageFormat("jpeg");
 
 	//
@@ -77,13 +81,17 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
 	// error_log(print_r($_SERVER, true));
 	// error_log(print_r(apache_request_headers(), true));
 	// file_put_contents('/tmp/rendered_' . $rc['image']['title'], $rc['image']['image']);
-	//file_put_contents('/tmp/rendered_' . $rc['image']['title'] . ".png", $image);
+	// file_put_contents('/tmp/rendered_' . $rc['image']['title'] . ".png", $image);
 	if( $version == 'thumbnail' ) {
 		$image->thumbnailImage($maxwidth, $maxheight);
-	} else {
+	} elseif( $maxwidth > 0 || $maxheight > 0 ) {
 		$image->scaleImage($maxwidth, $maxheight);
 	}
+
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $last_updated) . ' GMT', true, 200);
+	if( isset($ciniki['request']['args']['attachment']) && $ciniki['request']['args']['attachment'] == 'yes' ) {
+		header('Content-Disposition: attachment; filename="' . $original_filename . '"');
+	}
 	header("Content-type: image/jpeg");	
 
 	echo $image->getImageBlob();

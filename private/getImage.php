@@ -47,7 +47,7 @@ function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $max
 	if( isset($ciniki['request']['If-Modified-Since']) != '' 
 		&& strtotime($ciniki['request']['If-Modified-Since']) >= $rc['image']['last_updated'] ) {
 	    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $rc['image']['last_updated']) . ' GMT', true, 304);
-		error_log("Cache ok");
+//		error_log("Cache ok");
 		return array('stat'=>'ok');
 	}
 
