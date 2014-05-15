@@ -14,6 +14,7 @@ function ciniki_images_objects($ciniki) {
 	$objects['image'] = array(
 		'name'=>'Image',
 		'sync'=>'yes',
+		'backup'=>'no',
 		'table'=>'ciniki_images',
 		'fields'=>array(
 			'user_id'=>array('ref'=>'ciniki.users.user'),
@@ -32,6 +33,7 @@ function ciniki_images_objects($ciniki) {
 	$objects['version'] = array(
 		'name'=>'Image Version',
 		'sync'=>'yes',
+		'backup'=>'no',
 		'table'=>'ciniki_image_versions',
 		'fields'=>array(
 			'image_id'=>array('ref'=>'ciniki.images.image'),
@@ -43,6 +45,7 @@ function ciniki_images_objects($ciniki) {
 	$objects['action'] = array(
 		'name'=>'Image Action',
 		'sync'=>'yes',
+		'backup'=>'no',
 		'table'=>'ciniki_image_actions',
 		'fields'=>array(
 			'image_id'=>array('ref'=>'ciniki.images.image'),
@@ -56,6 +59,7 @@ function ciniki_images_objects($ciniki) {
 	$objects['ref'] = array(
 		'name'=>'Image References',
 		'sync'=>'yes',
+		'backup'=>'no',
 		'table'=>'ciniki_image_refs',
 		'fields'=>array(
 			'ref_id'=>array('ref'=>'ciniki.images.image'),
