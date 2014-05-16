@@ -79,6 +79,26 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
 	}
 
 	//
+	// Correct the orientation.  This is a problem with images from iPhones being rotated on some
+	// displays and not other.  Not everything detects the orientation properly.
+	//
+	$orientation = $image->getImageOrientation();
+	if( $orientation != imagick::ORIENTATION_TOPLEFT ) {
+		switch($orientation) {
+			case imagick::ORIENTATION_BOTTOMRIGHT: 
+				$image->rotateimage("#000", 180);
+				break;
+			case imagick::ORIENTATION_RIGHTTOP: 
+				$image->rotateimage("#000", 90);
+				break;
+			case imagick::ORIENTATION_LEFTBOTTOM: 
+				$image->rotateimage("#000", -90);
+				break;
+		}
+		$image->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
+	}
+
+	//
 	// Load photo into blob
 	//
 
