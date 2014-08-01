@@ -312,7 +312,7 @@ function ciniki_images_insertFromURL(&$ciniki, $business_id, $user_id, $url, $pe
 		. "'thumbnail', 0x03, UTC_TIMESTAMP(), UTC_TIMESTAMP())";
 	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1862', 'msg'=>'Unable to store thumbnail image', 'err'=>$rc['err']));	
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1895', 'msg'=>'Unable to store thumbnail image', 'err'=>$rc['err']));	
 	}
 	$version_id = $rc['insert_id'];
 	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
