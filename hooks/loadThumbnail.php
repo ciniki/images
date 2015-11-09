@@ -61,9 +61,11 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 	//
 	$utc_offset = date_offset_get(new DateTime);
 	if( file_exists($cache_filename) ) {
-		error_log("DBG: $cache_filename, " . filemtime($cache_filename) . ", $utc_offset, " . $img['last_updated'] . (isset($args['last_updated'])?', ' . $args['last_updated']:''));
+		error_log("DBG: $cache_filename, " . (filemtime($cache_filename)-$utc_offset) . ", $utc_offset, " . $img['last_updated'] . (isset($args['last_updated'])?', ' . $args['last_updated']:''));
 	}
 	if( file_exists($cache_filename)
+//		&& (filemtime($cache_filename)) > $img['last_updated'] 
+//		&& (!isset($args['last_updated']) || (filemtime($cache_filename)) > $args['last_updated'])
 		&& (filemtime($cache_filename) - $utc_offset) > $img['last_updated'] 
 		&& (!isset($args['last_updated']) || (filemtime($cache_filename) - $utc_offset) > $args['last_updated'])
 		) {
@@ -166,6 +168,7 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 		$image->setImageCompressionQuality(50);
 		fwrite($h, $image->getImageBlob());
 		fclose($h);
+		touch($cache_filename);
 	}
 
 	return array('stat'=>'ok', 'image'=>$image->getImageBlob());
