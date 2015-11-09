@@ -168,7 +168,11 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 		$image->setImageCompressionQuality(50);
 		fwrite($h, $image->getImageBlob());
 		fclose($h);
-		touch($cache_filename);
+		$dt = new DateTime('now', new DateTimeZone('UTC'));
+		error_log("DBG: " . $dt->format('H:i:s'));
+		error_log("DBG: " . $dt->getTimestamp()+$utc_offset);
+		error_log("DBG: " . $args['last_updated']);
+		touch($cache_filename, $dt->getTimestamp());
 	}
 
 	return array('stat'=>'ok', 'image'=>$image->getImageBlob());
