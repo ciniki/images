@@ -37,7 +37,7 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 	// Get the last updated timestamp
 	//
 	$strsql = "SELECT ciniki_images.uuid, ciniki_images.title, "
-		. "IF(ciniki_images.last_updated > ciniki_image_versions.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_image_versions.last_updated)) AS last_updated "
+		. "IF(ciniki_images.last_updated > ciniki_image_versions.last_updated, ciniki_images.last_updated, ciniki_image_versions.last_updated) AS last_updated "
 		. "FROM ciniki_images, ciniki_image_versions "
 		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
 		. "AND ciniki_images.id = ciniki_image_versions.image_id "
@@ -50,6 +50,9 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 	if( !isset($rc['image']) ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2658', 'msg'=>'Unable to render image'));
 	}
+	// Convert last_updated to timestamp
+	$date = new DateTime($rc['image']['last_updated'], new DateTimeZone('UTC'));
+	$rc['image']['last_updated'] = $date->format('U');
 	$img = $rc['image'];
 	$img_uuid = $rc['image']['uuid'];
 
@@ -61,13 +64,14 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 	//
 	$utc_offset = date_offset_get(new DateTime);
 	if( file_exists($cache_filename) ) {
+		clearstatcache(TRUE, $cache_filename);
 		error_log("DBG: $cache_filename, " . (filemtime($cache_filename)-$utc_offset) . ", $utc_offset, " . $img['last_updated'] . (isset($args['last_updated'])?', ' . $args['last_updated']:''));
 	}
 	if( file_exists($cache_filename)
-//		&& (filemtime($cache_filename)) > $img['last_updated'] 
-//		&& (!isset($args['last_updated']) || (filemtime($cache_filename)) > $args['last_updated'])
-		&& (filemtime($cache_filename) - $utc_offset) > $img['last_updated'] 
-		&& (!isset($args['last_updated']) || (filemtime($cache_filename) - $utc_offset) > $args['last_updated'])
+		&& (filemtime($cache_filename)) > $img['last_updated'] 
+		&& (!isset($args['last_updated']) || (filemtime($cache_filename)) > $args['last_updated'])
+//		&& (filemtime($cache_filename) - $utc_offset) > $img['last_updated'] 
+//		&& (!isset($args['last_updated']) || (filemtime($cache_filename) - $utc_offset) > $args['last_updated'])
 		) {
 		$imgblog = fread(fopen($cache_filename, 'r'), filesize($cache_filename));
 		return array('stat'=>'ok', 'image'=>$imgblog);
@@ -170,9 +174,11 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 		fclose($h);
 		$dt = new DateTime('now', new DateTimeZone('UTC'));
 		error_log("DBG: " . $dt->format('H:i:s'));
-		error_log("DBG: " . $dt->getTimestamp()+$utc_offset);
+		error_log("DBG: " . ($dt->getTimestamp()+$utc_offset));
 		error_log("DBG: " . $args['last_updated']);
+		error_log("DBG: before: " . filemtime($cache_filename));
 		touch($cache_filename, $dt->getTimestamp());
+		error_log("DBG: after: " . filemtime($cache_filename));
 	}
 
 	return array('stat'=>'ok', 'image'=>$image->getImageBlob());
