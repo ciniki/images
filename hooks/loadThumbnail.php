@@ -65,7 +65,6 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 	$utc_offset = date_offset_get(new DateTime);
 	if( file_exists($cache_filename) ) {
 		clearstatcache(TRUE, $cache_filename);
-		error_log("DBG: $cache_filename, " . (filemtime($cache_filename)) . ", " . $img['last_updated'] . (isset($args['last_updated'])?', ' . $args['last_updated']:''));
 	}
 	if( file_exists($cache_filename)
 		&& (filemtime($cache_filename)) >= $img['last_updated'] 
@@ -76,8 +75,6 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 		$imgblog = fread(fopen($cache_filename, 'r'), filesize($cache_filename));
 		return array('stat'=>'ok', 'image'=>$imgblog);
 	}
-
-	error_log('build image');
 
 	//
 	// If the file does not exist, then load information from database, and create cache file
@@ -158,7 +155,6 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 	// Check directory exists
 	//
 	if( !file_exists(dirname($cache_filename)) ) {
-		error_log("Creating cache dir: " . dirname($cache_filename));
 		if( mkdir(dirname($cache_filename), 0755, true) === false ) {
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2650', 'msg'=>'Unable to find image', 'pmsg'=>'Unable to create cache directory'));
 		}
@@ -172,13 +168,9 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 		$image->setImageCompressionQuality(50);
 		fwrite($h, $image->getImageBlob());
 		fclose($h);
+		// Set the filemtime to the proper UTC timestamp, don't rely on the filesystem to be correct
 		$dt = new DateTime('now', new DateTimeZone('UTC'));
-		error_log("DBG: " . $dt->format('H:i:s'));
-		error_log("DBG: " . ($dt->getTimestamp()+$utc_offset));
-		error_log("DBG: " . $args['last_updated']);
-		error_log("DBG: before: " . filemtime($cache_filename));
 		touch($cache_filename, $dt->getTimestamp());
-		error_log("DBG: after: " . filemtime($cache_filename));
 	}
 
 	return array('stat'=>'ok', 'image'=>$image->getImageBlob());
