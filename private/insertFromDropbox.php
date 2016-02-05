@@ -38,29 +38,44 @@ function ciniki_images_insertFromDropbox(&$ciniki, $business_id, $user_id, $clie
 	// Get the file from dropbox
 	//
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 	curl_setopt($ch, CURLOPT_HEADER, false);
 	curl_setopt($ch, CURLOPT_SSLVERSION, 1);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $client->getAccessToken()));
 	if( $path[0] != '/' ) { $path = '/' . $path; }
-	curl_setopt($ch, CURLOPT_URL, "https://api-content.dropbox.com/1/files/auto$path");
+	curl_setopt($ch, CURLOPT_URL, "https://api-content.dropbox.com/1/files/auto" . curl_escape($ch, $path));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 	curl_setopt($ch, CURLOPT_BINARYTRANSFER, TRUE);
 	$image_data = curl_exec($ch);
 	if( $image_data === false ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2281', 'msg'=>'Unable to get image'));
+        // 
+        // Try again
+        //
+        $image_data = curl_exec($ch);
+        if( $image_data === false ) {
+            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2281', 'msg'=>'Unable to get image', 'pmsg'=>curl_error($ch)));
+        }
 	}
+    if( curl_getinfo($ch, CURLINFO_HTTP_CODE) != '200' ) {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3078', 'msg'=>'Unable to get image.', 'msg'=>'HTTP CODE: ' . curl_getinfo($ch, CURLINFO_HTTP_CODE)));
+    }
 	curl_close($ch);
 	
 	//
 	// Load the image into Imagick so it can be processed and uploaded
 	//
 	$image = new Imagick();
-	$image->readImageBlob($image_data);
 	if( $image == null || $image === false ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2270', 'msg'=>'Unable to upload image'));
 	}
+
+    try {
+        $image->readImageBlob($image_data);
+    } catch (Exception $e) {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3079', 'msg'=>'Unable to understand image file: ' . $path));
+    }
+
 
 	$original_filename = basename($path);
 	if( $name == null || $name == '' ) {
