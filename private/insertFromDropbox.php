@@ -61,7 +61,7 @@ function ciniki_images_insertFromDropbox(&$ciniki, $business_id, $user_id, $clie
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3078', 'msg'=>'Unable to get image.', 'msg'=>'HTTP CODE: ' . curl_getinfo($ch, CURLINFO_HTTP_CODE)));
     }
 	curl_close($ch);
-	
+
 	//
 	// Load the image into Imagick so it can be processed and uploaded
 	//
@@ -76,6 +76,17 @@ function ciniki_images_insertFromDropbox(&$ciniki, $business_id, $user_id, $clie
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3079', 'msg'=>'Unable to understand image file: ' . $path));
     }
 
+    //
+    // Reduce image larger than 16M
+    //
+    if( strlen($image_data) > 16000000 ) {
+        if( $image->getImageWidth() > 3000 ) {
+            $image->resizeImage(3000, 3000, imagick::FILTER_LANCZOS, 1, true);
+        }
+        if( $image->getImageCompressionQuality() > 75 ) {
+            $image->setImageCompressionQuality(75);
+        }
+    }
 
 	$original_filename = basename($path);
 	if( $name == null || $name == '' ) {
