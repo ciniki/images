@@ -24,32 +24,66 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuery');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbFetchHashRow');
 
-	//
-	// Get the image data from the database for this version
-	//
-	$strsql = "SELECT ciniki_images.title, "
-		. "UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated, ciniki_images.image, "
-		. "ciniki_images.original_filename "
-		. "FROM ciniki_images, ciniki_image_versions "
-		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-		. "AND ciniki_images.id = ciniki_image_versions.image_id "
-		. "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');	
-	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'339', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
-	}
-	if( !isset($rc['image']) ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'340', 'msg'=>'Unable to render image'));
-	}
+    //
+    // Get the last updated
+    //
+    $strsql = "SELECT ciniki_images.uuid, ciniki_images.business_id, ciniki_images.title, "
+        . "UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated, "
+        . "ciniki_images.original_filename "
+        . "FROM ciniki_images, ciniki_image_versions "
+        . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+        . "AND ciniki_images.id = ciniki_image_versions.image_id "
+        . "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
+    $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');	
+    if( $rc['stat'] != 'ok' ) {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'339', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+    }
+    if( !isset($rc['image']) ) {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'340', 'msg'=>'Unable to render image'));
+    }
+    $last_updated = $rc['image']['last_updated'];
+    $original_filename = $rc['image']['original_filename'];
+    $title = $rc['image']['title'];
+    $image = $rc['image'];
 
 	//
-	// Load the image in Imagemagic
+	// Get the business storage directory
 	//
-	$image = new Imagick();
-	$image->readImageBlob($rc['image']['image']);
-	$last_updated = $rc['image']['last_updated'];
-	$title = $rc['image']['title'];
-	$original_filename = $rc['image']['original_filename'];
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'storageDir');
+	$rc = ciniki_businesses_hooks_storageDir($ciniki, $image['business_id'], array());
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$business_storage_dir = $rc['storage_dir'];
+	
+	$storage_filename = $business_storage_dir . '/ciniki.images/'
+		. $image['uuid'][0] . '/' . $image['uuid'];
+    
+    if( file_exists($storage_filename) ) {
+        $image = new Imagick($storage_filename);
+    } else {
+        //
+        // Get the image data from the database for this version
+        //
+        $strsql = "SELECT ciniki_images.image "
+            . "FROM ciniki_images "
+            . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+            . "";
+        $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');	
+        if( $rc['stat'] != 'ok' ) {
+            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'339', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+        }
+        if( !isset($rc['image']) ) {
+            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'340', 'msg'=>'Unable to render image'));
+        }
+
+        //
+        // Load the image in Imagemagic
+        //
+        $image = new Imagick();
+        $image->readImageBlob($rc['image']['image']);
+    }
+
 	$image->setImageFormat("jpeg");
 
 	//

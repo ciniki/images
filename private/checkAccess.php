@@ -25,6 +25,11 @@ function ciniki_images_checkAccess($ciniki, $business_id, $method) {
 		return array('stat'=>'ok');
 	}
 
+    if( $method == 'moveToStorage' ) {
+        // Admin only function
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'655', 'msg'=>'Access denied.'));
+    }
+
 	//
 	// Users who are an owner or employee of a business can see the business images
 	//

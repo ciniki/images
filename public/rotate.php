@@ -64,7 +64,7 @@ function ciniki_images_rotate(&$ciniki) {
 	//
 	// Load the image
 	//
-	$strsql = "SELECT id, image "
+	$strsql = "SELECT id, uuid, image "
 		. "FROM ciniki_images "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
@@ -76,8 +76,27 @@ function ciniki_images_rotate(&$ciniki) {
 	if( !isset($rc['image']) ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'660', 'msg'=>'Unable to find the image requested'));
 	}
-	$image = new Imagick();
-	$image->readImageBlob($rc['image']['image']);
+    $img = $rc['image'];
+
+	//
+	// Get the business storage directory
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'storageDir');
+	$rc = ciniki_businesses_hooks_storageDir($ciniki, $args['business_id'], array());
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$business_storage_dir = $rc['storage_dir'];
+	
+	$storage_filename = $business_storage_dir . '/ciniki.images/'
+		. $img['uuid'][0] . '/' . $img['uuid'];
+    
+    if( file_exists($storage_filename) ) {
+        $image = new Imagick($storage_filename);
+    } else {
+        $image = new Imagick();
+        $image->readImageBlob($img['image']);
+    }
 
 	//
 	// Rotate the image
@@ -88,12 +107,23 @@ function ciniki_images_rotate(&$ciniki) {
 		$image->rotateImage(new ImagickPixel('none'), 90);
 	}
 
+    //
+    // Save the image
+    //
+	$h = fopen($storage_filename, 'w');
+	if( $h ) {
+		fwrite($h, $image->getImageBlob());
+		fclose($h);
+	} else {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3351', 'msg'=>'Unable to add image'));
+    }
+
 	//
 	// Save the updated version
 	//
 	$strsql = "UPDATE ciniki_images "
-		. "SET image = '" . ciniki_core_dbQuote($ciniki, $image->getImageBlob()) . "' "
-		. ", last_updated = UTC_TIMESTAMP() "
+//		. "SET image = '" . ciniki_core_dbQuote($ciniki, $image->getImageBlob()) . "' "
+		. "SET last_updated = UTC_TIMESTAMP() "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
 		. "";

@@ -26,28 +26,64 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbFetchHashRow');
 
 	//
-	// Get the image data from the database for this version
+	// Get the business storage directory
 	//
-	$strsql = "SELECT ciniki_images.title, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated, ciniki_images.image "
-		. "FROM ciniki_images, ciniki_image_versions "
-		. "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-		. "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND ciniki_images.id = ciniki_image_versions.image_id "
-		. "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');	
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'storageDir');
+	$rc = ciniki_businesses_hooks_storageDir($ciniki, $business_id, array());
 	if( $rc['stat'] != 'ok' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'637', 'msg'=>'Unable to load image', 'err'=>$rc['err']));
+		return $rc;
 	}
-	if( !isset($rc['image']) ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'638', 'msg'=>'Unable to load image'));
-	}
+	$business_storage_dir = $rc['storage_dir'];
+	
+    //
+    // Get the last updated
+    //
+    $strsql = "SELECT ciniki_images.uuid, ciniki_images.title, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated "
+        . "FROM ciniki_images, ciniki_image_versions "
+        . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+        . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "AND ciniki_images.id = ciniki_image_versions.image_id "
+        . "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
+    $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');	
+    if( $rc['stat'] != 'ok' ) {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'339', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+    }
+    if( !isset($rc['image']) ) {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'340', 'msg'=>'Unable to render image'));
+    }
 
-	//
-	// Load the image in Imagemagic
-	//
-	$image = new Imagick();
-	$image->readImageBlob($rc['image']['image']);
-	$last_updated = $rc['image']['last_updated'];
+    $image = $rc['image'];
+
+    $storage_filename = $business_storage_dir . '/ciniki.images/'
+        . $image['uuid'][0] . '/' . $image['uuid'];
+    $last_updated = $rc['image']['last_updated'];
+
+    if( file_exists($storage_filename) ) {
+        $image = new Imagick($storage_filename);
+    } else {
+        //
+        // Get the image data from the database for this version
+        //
+        $strsql = "SELECT ciniki_images.image "
+            . "FROM ciniki_images "
+            . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+            . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "";
+        $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');	
+        if( $rc['stat'] != 'ok' ) {
+            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'637', 'msg'=>'Unable to load image', 'err'=>$rc['err']));
+        }
+        if( !isset($rc['image']) ) {
+            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'638', 'msg'=>'Unable to load image'));
+        }
+
+        //
+        // Load the image in Imagemagic
+        //
+        $image = new Imagick();
+        $image->readImageBlob($rc['image']['image']);
+    }
+
 	$image->setImageFormat("jpeg");
 
 	//

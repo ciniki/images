@@ -123,6 +123,21 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
 		return array('stat'=>'fail', 'id'=>$rc['images']['id'], 'err'=>array('pkg'=>'ciniki', 'code'=>'330', 'msg'=>'Duplicate image'));
 	}
 
+    //
+    // Get the business UUID
+    //
+	$strsql = "SELECT uuid "
+        . "FROM ciniki_businesses "
+		. "WHERE id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' ";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.businesses', 'business');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( !isset($rc['business']) ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3349', 'msg'=>'Unable to get business details'));
+	}
+	$business_uuid = $rc['business']['uuid'];
+
 	//
 	// Get a new UUID
 	//
@@ -132,6 +147,31 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
 		return $rc;
 	}
 	$uuid = $rc['uuid'];
+
+	//
+	// Move the file to ciniki-storage
+	//
+	$storage_dirname = $ciniki['config']['ciniki.core']['storage_dir'] . '/'
+		. $business_uuid[0] . '/' . $business_uuid
+		. '/ciniki.images/'
+		. $uuid[0];
+	$storage_filename = $storage_dirname . '/' . $uuid;
+	if( !is_dir($storage_dirname) ) {
+		if( !mkdir($storage_dirname, 0700, true) ) {
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3348', 'msg'=>'Unable to add file'));
+		}
+	}
+
+    //
+    // Write the image to storage
+    //
+	$h = fopen($storage_filename, 'w');
+	if( $h ) {
+		fwrite($h, $image->getImageBlob());
+		fclose($h);
+	} else {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3346', 'msg'=>'Unable to add image'));
+    }
 
 	//
 	// Add to image table
@@ -149,7 +189,8 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
 		. "'" . ciniki_core_dbQuote($ciniki, $caption). "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $checksum) . "', "
 		. "UTC_TIMESTAMP(), UTC_TIMESTAMP(), "
-		. "'" . ciniki_core_dbQuote($ciniki, $image->getImageBlob()) . "')";
+        . "'')";
+//		. "'" . ciniki_core_dbQuote($ciniki, $image->getImageBlob()) . "')";
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
 	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
