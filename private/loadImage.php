@@ -52,11 +52,11 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'340', 'msg'=>'Unable to render image'));
     }
 
-    $image = $rc['image'];
+    $img = $rc['image'];
 
     $storage_filename = $business_storage_dir . '/ciniki.images/'
-        . $image['uuid'][0] . '/' . $image['uuid'];
-    $last_updated = $rc['image']['last_updated'];
+        . $img['uuid'][0] . '/' . $img['uuid'];
+//    $last_updated = $img['last_updated'];
 
     if( file_exists($storage_filename) ) {
         $image = new Imagick($storage_filename);

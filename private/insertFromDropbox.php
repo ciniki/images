@@ -232,9 +232,15 @@ function ciniki_images_insertFromDropbox(&$ciniki, $business_id, $user_id, $clie
 		. "'" . ciniki_core_dbQuote($ciniki, $name). "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $caption). "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $checksum) . "', "
-		. "UTC_TIMESTAMP(), UTC_TIMESTAMP(), "
-        . "'')";
-//		. "'" . ciniki_core_dbQuote($ciniki, $image->getImageBlob()) . "')";
+		. "UTC_TIMESTAMP(), UTC_TIMESTAMP(), ";
+    //
+    // Only store in the database if specified in config
+    //
+    if( isset($ciniki['config']['ciniki.images']['database.storage']) && $ciniki['config']['ciniki.images']['database.storage'] == 'on' ) {
+		$strsql .= "'" . ciniki_core_dbQuote($ciniki, $image->getImageBlob()) . "')";
+    } else {
+        $strsql .= "'')";
+    }
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
 	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
 	if( $rc['stat'] != 'ok' ) {
