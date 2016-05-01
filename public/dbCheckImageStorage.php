@@ -73,7 +73,7 @@ function ciniki_images_dbCheckImageStorage($ciniki) {
             continue;
         }
         if( isset($args['clear']) && $args['clear'] == 'yes' && file_exists($storage_filename) ) {
-            $rc = ciniki_core_objectUpdate($ciniki, $args['business_id'], 'ciniki.images.images', $image['id'], array('image'=>''));
+            $rc = ciniki_core_objectUpdate($ciniki, $args['business_id'], 'ciniki.images.image', $image['id'], array('image'=>''));
             if( $rc['stat'] != 'ok' ) {
                 return $rc;
             }
