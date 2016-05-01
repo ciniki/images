@@ -25,7 +25,7 @@ function ciniki_images_checkAccess($ciniki, $business_id, $method) {
 		return array('stat'=>'ok');
 	}
 
-    if( $method == 'moveToStorage' ) {
+    if( $method == 'dbPruneImages' ) {
         // Admin only function
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'655', 'msg'=>'Access denied.'));
     }
