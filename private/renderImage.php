@@ -49,12 +49,16 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
 	//
 	// Get the business storage directory
 	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'storageDir');
-	$rc = ciniki_businesses_hooks_storageDir($ciniki, $image['business_id'], array());
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-	$business_storage_dir = $rc['storage_dir'];
+    if( $image['business_id'] > 0 ) {
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'storageDir');
+        $rc = ciniki_businesses_hooks_storageDir($ciniki, $image['business_id'], array());
+        if( $rc['stat'] != 'ok' ) {
+            return $rc;
+        }
+        $business_storage_dir = $rc['storage_dir'];
+    } else {
+        $business_storage_dir = $ciniki['config']['ciniki.core']['storage_dir'] . '/0/0';
+    }
 	
 	$storage_filename = $business_storage_dir . '/ciniki.images/'
 		. $image['uuid'][0] . '/' . $image['uuid'];
