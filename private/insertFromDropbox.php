@@ -180,7 +180,7 @@ function ciniki_images_insertFromDropbox(&$ciniki, $business_id, $user_id, $clie
 		return $rc;
 	}
 	if( !isset($rc['business']) ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3349', 'msg'=>'Unable to get business details'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3344', 'msg'=>'Unable to get business details'));
 	}
 	$business_uuid = $rc['business']['uuid'];
 
@@ -204,7 +204,7 @@ function ciniki_images_insertFromDropbox(&$ciniki, $business_id, $user_id, $clie
 	$storage_filename = $storage_dirname . '/' . $uuid;
 	if( !is_dir($storage_dirname) ) {
 		if( !mkdir($storage_dirname, 0700, true) ) {
-			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3348', 'msg'=>'Unable to add file'));
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3345', 'msg'=>'Unable to add file'));
 		}
 	}
 

@@ -170,7 +170,7 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
 		fwrite($h, $image->getImageBlob());
 		fclose($h);
 	} else {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3346', 'msg'=>'Unable to add image'));
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3353', 'msg'=>'Unable to add image'));
     }
 
 	//
