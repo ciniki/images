@@ -98,8 +98,11 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
         if( $rc['stat'] != 'ok' ) {
             return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'624', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
         }
-        if( !isset($rc['image']) ) {
+        if( !isset($rc['image']['image']) ) {
             return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'625', 'msg'=>'Unable to render image'));
+        }
+        if( $rc['image']['image'] == '' ) {
+            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3378', 'msg'=>'Missing image'));
         }
 
         //

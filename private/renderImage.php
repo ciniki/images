@@ -77,8 +77,11 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
         if( $rc['stat'] != 'ok' ) {
             return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'339', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
         }
-        if( !isset($rc['image']) ) {
+        if( !isset($rc['image']['image']) ) {
             return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'340', 'msg'=>'Unable to render image'));
+        }
+        if( $rc['image']['image'] == '' ) {
+            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3379', 'msg'=>'Unable to render image'));
         }
 
         //
