@@ -33,7 +33,7 @@
 // -------
 // The image ID that was added.
 //
-function ciniki_images_insertFromImagick(&$ciniki, $business_id, $args) {
+function ciniki_images_hooks_insertFromImagick(&$ciniki, $business_id, $args) {
 
     //
     // Check image is specified
@@ -54,7 +54,7 @@ function ciniki_images_insertFromImagick(&$ciniki, $business_id, $args) {
         $args['caption'] = '';
     }
 
-	if( !isset($args['name'] || $args['name'] == '' ) {
+	if( !isset($args['name']) || $args['name'] == '' ) {
 		$args['name'] = $args['original_filename'];
 
 		if( preg_match('/(IMG|DSC)_[0-9][0-9][0-9][0-9]\.(jpg|gif|tiff|bmp|png)/', $args['name'], $matches) ) {
@@ -140,7 +140,7 @@ function ciniki_images_insertFromImagick(&$ciniki, $business_id, $args) {
     // Get the business storage directory
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'storageDir');
-    $rc = ciniki_businesses_hooks_storageDir($ciniki, $args['business_id'], array());
+    $rc = ciniki_businesses_hooks_storageDir($ciniki, $business_id, array());
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -169,13 +169,17 @@ function ciniki_images_insertFromImagick(&$ciniki, $business_id, $args) {
     //
     // Write the image to storage
     //
-	$h = fopen($storage_filename, 'w');
-	if( $h ) {
-		fwrite($h, $args['image']->getImageBlob());
-		fclose($h);
-	} else {
+    if( !$args['image']->writeImage($storage_filename) ) {
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3421', 'msg'=>'Unable to add image'));
     }
+
+//	$h = fopen($storage_filename, 'w');
+//	if( $h ) {
+//		fwrite($h, $args['image']->getImageBlob());
+//		fclose($h);
+//	} else {
+//        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3421', 'msg'=>'Unable to add image'));
+//    }
 
 	//
 	// Add to image table
