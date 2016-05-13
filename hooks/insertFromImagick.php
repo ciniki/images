@@ -131,9 +131,9 @@ function ciniki_images_hooks_insertFromImagick(&$ciniki, $business_id, $args) {
 	//
 	// Check if there is an image that exists, and that the force flag has not been set
 	//
-	if( isset($rc['images']) && $force_duplicate != 'yes' ) {
+	if( isset($rc['images']) && isset($args['force_duplicate']) && $args['force_duplicate'] != 'yes' ) {
 		// Return the ID incase the calling script wants to use the existing image
-		return array('stat'=>'fail', 'id'=>$rc['images']['id'], 'err'=>array('pkg'=>'ciniki', 'code'=>'3419', 'msg'=>'Duplicate image'));
+		return array('stat'=>'exists', 'id'=>$rc['images']['id'], 'err'=>array('pkg'=>'ciniki', 'code'=>'3419', 'msg'=>'Duplicate image'));
 	}
 
     //
