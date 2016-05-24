@@ -171,7 +171,7 @@ function ciniki_images_hooks_insertFromImagick(&$ciniki, $business_id, $args) {
     //
 	$h = fopen($storage_filename, 'w');
 	if( $h ) {
-		fwrite($h, $image->getImageBlob());
+		fwrite($h, $args['image']->getImageBlob());
 		fclose($h);
 	} else {
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3439', 'msg'=>'Unable to add image'));
