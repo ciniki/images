@@ -167,11 +167,18 @@ function ciniki_images_hooks_insertFromImagick(&$ciniki, $business_id, $args) {
 	}
 
     //
-    // Write the image to storage
+    // Write the image to storage, using standard file handles so it will work of sshfs
     //
-    if( !$args['image']->writeImage($storage_filename) ) {
+	$h = fopen($storage_filename, 'w');
+	if( $h ) {
+		fwrite($h, $image->getImageBlob());
+		fclose($h);
+	} else {
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3439', 'msg'=>'Unable to add image'));
     }
+//    if( !$args['image']->writeImage($storage_filename) ) {
+//        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3439', 'msg'=>'Unable to add image'));
+//    }
 
 	//
 	// Add to image table
