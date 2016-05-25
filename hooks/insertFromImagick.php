@@ -176,9 +176,6 @@ function ciniki_images_hooks_insertFromImagick(&$ciniki, $business_id, $args) {
 	} else {
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3439', 'msg'=>'Unable to add image'));
     }
-//    if( !$args['image']->writeImage($storage_filename) ) {
-//        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3439', 'msg'=>'Unable to add image'));
-//    }
 
 	//
 	// Add to image table
