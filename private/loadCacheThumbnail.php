@@ -109,7 +109,9 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
         // Load the image in Imagemagic
         //
         $image = new Imagick();
-        $image->readImageBlob($rc['image']['image']);
+        if( $rc['image']['image'] != '' ) {
+            $image->readImageBlob($rc['image']['image']);
+        }
     }
 
 //	$last_updated = $rc['image']['last_updated'];
