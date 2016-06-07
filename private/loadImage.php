@@ -81,7 +81,11 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
         // Load the image in Imagemagic
         //
         $image = new Imagick();
-        $image->readImageBlob($rc['image']['image']);
+        if( $rc['image']['image'] != '' ) {
+            $image->readImageBlob($rc['image']['image']);
+        } else {
+            $image->newImage(500, 500, "#ffffff");
+        }
     }
 
 	$image->setImageFormat("jpeg");
