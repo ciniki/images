@@ -101,9 +101,6 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
         if( !isset($rc['image']['image']) ) {
             return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'625', 'msg'=>'Unable to render image'));
         }
-        if( $rc['image']['image'] == '' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3378', 'msg'=>'Missing image'));
-        }
 
         //
         // Load the image in Imagemagic
@@ -111,6 +108,8 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
         $image = new Imagick();
         if( $rc['image']['image'] != '' ) {
             $image->readImageBlob($rc['image']['image']);
+        } else {
+            $image->newImage(500, 500, "#ffffff");
         }
     }
 
