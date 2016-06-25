@@ -24,77 +24,77 @@
 #
 # Fields
 # ------
-# id: 					The unique ID of the image.
+# id:                   The unique ID of the image.
 #
-# uuid:					The Universal Unique ID for the image.
+# uuid:                 The Universal Unique ID for the image.
 #
-# business_id:			The business the photo is attached to.  A profile pic for a user 
-#						should not be attached to the business, it should only be attached
-#						to a user through user_id.
+# business_id:          The business the photo is attached to.  A profile pic for a user 
+#                       should not be attached to the business, it should only be attached
+#                       to a user through user_id.
 #
-# user_id:				If a customer uploaded the photo, then it should be
-#						attached to the user, so they have privileges on the photo.
-#						If the photo is owned by the business, then the user_id = 0. 
+# user_id:              If a customer uploaded the photo, then it should be
+#                       attached to the user, so they have privileges on the photo.
+#                       If the photo is owned by the business, then the user_id = 0. 
 #
-# perms:				Assume private to user_id, and business owner.
+# perms:                Assume private to user_id, and business owner.
 #
-#						*note* future use only, not currently implemented.  All images default to 1 - public.
+#                       *note* future use only, not currently implemented.  All images default to 1 - public.
 #
-#						0x01 - public, can display on website, feeds, etc
-#						0x02 - customer, customers can see this.
-#						0x04 - employees
-#						0x08 - unused
+#                       0x01 - public, can display on website, feeds, etc
+#                       0x02 - customer, customers can see this.
+#                       0x04 - employees
+#                       0x08 - unused
 #
-# type:					The type can be a local uploaded image, or an images which
-#						is hosted elsewhere.  Currently, the only one supported
-#						will be local png and local jpeg.
+# type:                 The type can be a local uploaded image, or an images which
+#                       is hosted elsewhere.  Currently, the only one supported
+#                       will be local png and local jpeg.
 #
-#						0 - unknown
-#						1 - local png
-#						2 - local jpeg
-#						3 - local gif *future*
-#						4 - local tiff *future*
-#						5 - local bmp *future*
-#						6 - 
-#						128 - flickr *future
-#						129 - smugmug *future
-#						130 - picassa *future
-#						131 - 
+#                       0 - unknown
+#                       1 - local png
+#                       2 - local jpeg
+#                       3 - local gif *future*
+#                       4 - local tiff *future*
+#                       5 - local bmp *future*
+#                       6 - 
+#                       128 - flickr *future
+#                       129 - smugmug *future
+#                       130 - picassa *future
+#                       131 - 
 #
-# original_filename:	The original filename the image was uploaded with.  May be blank if 
-#						taken directly with camera on mobile or other device.
+# original_filename:    The original filename the image was uploaded with.  May be blank if 
+#                       taken directly with camera on mobile or other device.
 #
-# remote_id:			The id at the remote side, if stored at a place like flickr.
+# remote_id:            The id at the remote side, if stored at a place like flickr.
 #
-# title:				The title or filename assigned to the image.
+# title:                The title or filename assigned to the image.
 #
-# caption:				The caption for the image.
+# caption:              The caption for the image.
 #
-# image:				The binary image data in imageMagick format ($image->getImageBlob()).
+# image:                The binary image data in imageMagick format ($image->getImageBlob()).
 #
-# checksum:				The crc32 checksum for the image.  This field is used to make sure
-#						duplicate images are not stored in the database.
+# checksum:             The crc32 checksum for the image.  This field is used to make sure
+#                       duplicate images are not stored in the database.
 #
-# date_added:			The date and time the image was added to the database.
-# last_updated:			The date and time the image was last updated.
+# date_added:           The date and time the image was added to the database.
+# last_updated:         The date and time the image was last updated.
 #
 create table ciniki_images (
-	id int not null auto_increment,
-	uuid char(36) not null,
-	business_id int not null,
-	user_id int not null,
-	perms tinyint unsigned not null,
-	type tinyint unsigned not null,
-	original_filename varchar(150) not null,
-	remote_id varchar(50) not null,
-	title varchar(100) not null,
-	caption varchar(500) not null,
-	image mediumblob,
-	checksum int unsigned not null,
-	date_added datetime not null,
-	last_updated datetime not null,
-	primary key (id),
-	index (business_id, user_id),
-	index (remote_id),
-	index uuid (business_id, uuid, last_updated)
+    id int not null auto_increment,
+    uuid char(36) not null,
+    business_id int not null,
+    user_id int not null,
+    perms tinyint unsigned not null,
+    type tinyint unsigned not null,
+    original_filename varchar(150) not null,
+    remote_id varchar(50) not null,
+    title varchar(100) not null,
+    caption varchar(500) not null,
+    image mediumblob,
+    checksum int unsigned not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    index (business_id, user_id),
+    index (remote_id),
+    index uuid (business_id, uuid, last_updated)
 ) ENGINE=InnoDB, COMMENT='v1.04';

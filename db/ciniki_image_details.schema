@@ -18,12 +18,12 @@
 # last_updated:         The date and time the record was last updated.
 #
 create table ciniki_image_details (
-	business_id int not null,
-	image_id int not null,
-	detail_key varchar(50) not null,
-	detail_value varchar(100) not null,
-	date_added datetime not null,
-	last_updated datetime not null,
-	primary key (business_id, image_id, detail_key),
-	index (last_updated)
+    business_id int not null,
+    image_id int not null,
+    detail_key varchar(50) not null,
+    detail_value varchar(100) not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (business_id, image_id, detail_key),
+    index (last_updated)
 ) ENGINE=InnoDB, COMMENT='v1.02';

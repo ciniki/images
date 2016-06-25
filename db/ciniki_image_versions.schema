@@ -15,38 +15,38 @@
 #
 # Fields
 # ------
-# image_id:			The ID of the image the version is applied to.
-# version:			The string for the version.  Accepted values:
+# image_id:         The ID of the image the version is applied to.
+# version:          The string for the version.  Accepted values:
 #
-#					- original
-#					- thumbnail
+#                   - original
+#                   - thumbnail
 #
-# flags:			Informational flags about the image. 
+# flags:            Informational flags about the image. 
 #
-#					Orientation of the image is stored with the version, and
-#					if both portrait and landscape are set, then the image is square.
-#					
-#					0x01 - portrait
-#					0x02 - landscape
-#					0x03 - square
+#                   Orientation of the image is stored with the version, and
+#                   if both portrait and landscape are set, then the image is square.
+#                   
+#                   0x01 - portrait
+#                   0x02 - landscape
+#                   0x03 - square
 #
-#					Other
-#					0x04 - ??
+#                   Other
+#                   0x04 - ??
 #
-# date_added: 		The date and time the version was added to the database.
-# last_updated:		The date and time the version of the image was last changed.
-#					This is important to keep up to date, because it is used
-#					to control caching of the image both local and at the browser.
+# date_added:       The date and time the version was added to the database.
+# last_updated:     The date and time the version of the image was last changed.
+#                   This is important to keep up to date, because it is used
+#                   to control caching of the image both local and at the browser.
 #
 create table ciniki_image_versions (
-	id int not null auto_increment PRIMARY KEY,
-	uuid char(36) not null,
-	business_id int not null,
-	image_id int not null,
-	version varchar(25) not null,
-	flags tinyint unsigned not null,
-	date_added datetime not null,
-	last_updated datetime not null,
-	unique index image_id (image_id, version),
-	index uuid (business_id, uuid, last_updated)
+    id int not null auto_increment PRIMARY KEY,
+    uuid char(36) not null,
+    business_id int not null,
+    image_id int not null,
+    version varchar(25) not null,
+    flags tinyint unsigned not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    unique index image_id (image_id, version),
+    index uuid (business_id, uuid, last_updated)
 ) ENGINE='InnoDB', COMMENT='v1.02';

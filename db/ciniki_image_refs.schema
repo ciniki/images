@@ -13,29 +13,29 @@
 #
 # Fields
 # ------
-# id:					The ID of the reference
-# uuid:					The Universal Unique ID of the reference
-# business_id:			The ID of the business the reference belongs to.
+# id:                   The ID of the reference
+# uuid:                 The Universal Unique ID of the reference
+# business_id:          The ID of the business the reference belongs to.
 #
-# ref_id:				The ID of the image being referenced.
-# object:				The object that is referring to the image.
-# object_id:			The ID of the object that is referring to the image.
-# object_field:			The table field in the object which the image_id is stored in.
+# ref_id:               The ID of the image being referenced.
+# object:               The object that is referring to the image.
+# object_id:            The ID of the object that is referring to the image.
+# object_field:         The table field in the object which the image_id is stored in.
 #
-# date_added:			The UTC date and time the reference was added.
+# date_added:           The UTC date and time the reference was added.
 # last_updated:         The UTC date and time the record was last updated.
 #
 create table ciniki_image_refs (
-	id int not null auto_increment,
-	uuid char(36) not null,
-	business_id int not null,
-	ref_id int not null,
-	object varchar(100) not null,
-	object_id varchar(100) not null,
-	object_field varchar(100) not null,
-	date_added datetime not null,
-	last_updated datetime not null,
-	primary key (id),
-	unique index (ref_id, object, object_id),
-	index (business_id, uuid, last_updated)
+    id int not null auto_increment,
+    uuid char(36) not null,
+    business_id int not null,
+    ref_id int not null,
+    object varchar(100) not null,
+    object_id varchar(100) not null,
+    object_field varchar(100) not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (ref_id, object, object_id),
+    index (business_id, uuid, last_updated)
 ) ENGINE=InnoDB, COMMENT='v1.02';

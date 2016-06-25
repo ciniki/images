@@ -7,11 +7,11 @@
 #
 # Fields
 # ------
-# image_id:			The image the tag is attached to.
-# tag:				The tag text.
+# image_id:         The image the tag is attached to.
+# tag:              The tag text.
 #
 create table ciniki_image_tags (
-	image_id int not null,
-	tag varchar(50) not null,
-	primary key (image_id, tag)
+    image_id int not null,
+    tag varchar(50) not null,
+    primary key (image_id, tag)
 ) ENGINE=InnoDB, COMMENT='v1.01';
