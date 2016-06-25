@@ -41,7 +41,7 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
     //
     // Get the last updated timestamp
     //
-    $strsql = "SELECT ciniki_images.uuid, ciniki_images.title, "
+    $strsql = "SELECT ciniki_images.uuid, ciniki_images.title, ciniki_images.original_filename, "
         . "IF(ciniki_images.last_updated > ciniki_image_versions.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_image_versions.last_updated)) AS last_updated "
         . "FROM ciniki_images, ciniki_image_versions "
         . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
@@ -141,7 +141,10 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
     // Fit the image into the constraints, if either dimension is larger.
     //
     if( $image->getImageWidth() > $maxwidth || $image->getImageHeight() > $maxheight ) {
-        $image->resizeImage($maxwidth, $maxheight, imagick::FILTER_LANCZOS, 1, true);
+//        error_log($maxwidth);
+//        error_log($maxheight);
+//        $image->resizeImage($maxwidth, $maxheight, imagick::FILTER_LANCZOS, 1, true);
+        $image->scaleImage($maxwidth, $maxheight);
     }
 
     //
@@ -163,6 +166,7 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
         fclose($h);
     }
 
-    return array('stat'=>'ok', 'image'=>$image->getImageBlob());
+
+    return array('stat'=>'ok', 'image'=>$image->getImageBlob(), 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename']);
 }
 ?>
