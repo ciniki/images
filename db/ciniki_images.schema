@@ -25,9 +25,7 @@
 # Fields
 # ------
 # id:                   The unique ID of the image.
-#
 # uuid:                 The Universal Unique ID for the image.
-#
 # business_id:          The business the photo is attached to.  A profile pic for a user 
 #                       should not be attached to the business, it should only be attached
 #                       to a user through user_id.

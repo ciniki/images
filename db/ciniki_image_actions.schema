@@ -12,6 +12,10 @@
 #
 # Fields
 # ------
+# id:               The ID of the action.
+# uuid:             The Universal Unique ID.
+# business_id:      The ID of the business the image and action are for.
+#
 # image_id:         The ID of the image to apply the action to.
 # version:          The version of the image the action is for.
 # sequence:         The order of the action.

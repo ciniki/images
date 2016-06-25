@@ -11,6 +11,8 @@
 #
 # Fields
 # ------
+# business_id:          The ID of the business the detail is attached to.
+#
 # image_id:             The image the detail is for.
 # detail_key:           The decimal notated index key to the value.
 # detail_value:         The value of the detail.

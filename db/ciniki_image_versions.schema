@@ -15,6 +15,10 @@
 #
 # Fields
 # ------
+# id:               The ID of the version.
+# uuid:             The Universal Unique ID.
+# business_id:      The ID of the business the image and version are attached to.
+#
 # image_id:         The ID of the image the version is applied to.
 # version:          The string for the version.  Accepted values:
 #
