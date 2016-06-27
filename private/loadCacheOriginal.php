@@ -69,8 +69,8 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
     $utc_offset = date_offset_get(new DateTime);
     if( file_exists($cache_filename)
         && (filemtime($cache_filename) - $utc_offset) > $img['last_updated'] ) {
-        $imgblog = fread(fopen($cache_filename, 'r'), filesize($cache_filename));
-        return array('stat'=>'ok', 'image'=>$imgblog);
+        $imgblob = fread(fopen($cache_filename, 'r'), filesize($cache_filename));
+        return array('stat'=>'ok', 'image'=>$imgblob, 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename']);
     }
 
     //

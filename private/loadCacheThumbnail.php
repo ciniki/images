@@ -39,7 +39,7 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
     //
     // Get the last updated timestamp
     //
-    $strsql = "SELECT ciniki_images.uuid, ciniki_images.title, "
+    $strsql = "SELECT ciniki_images.uuid, ciniki_images.title, ciniki_images.original_filename, "
         . "IF(ciniki_images.last_updated > ciniki_image_versions.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_image_versions.last_updated)) AS last_updated "
         . "FROM ciniki_images, ciniki_image_versions "
         . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
@@ -68,8 +68,8 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
     $utc_offset = date_offset_get(new DateTime);
     if( file_exists($cache_filename)
         && (filemtime($cache_filename) - $utc_offset) > $img['last_updated'] ) {
-        $imgblog = fread(fopen($cache_filename, 'r'), filesize($cache_filename));
-        return array('stat'=>'ok', 'image'=>$imgblog);
+        $imgblob = fread(fopen($cache_filename, 'r'), filesize($cache_filename));
+        return array('stat'=>'ok', 'image'=>$imgblob, 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename']);
     }
 
     //
@@ -163,6 +163,6 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
         fclose($h);
     }
 
-    return array('stat'=>'ok', 'image'=>$image->getImageBlob());
+    return array('stat'=>'ok', 'image'=>$image->getImageBlob(), 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename']);
 }
 ?>
