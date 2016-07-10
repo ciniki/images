@@ -93,7 +93,6 @@ foreach($images as $iid => $image) {
         . '/ciniki.images/' 
         . $image['image_uuid'][0] . '/' . $image['image_uuid'];
 
-    error_log($storage_filename);
     if( !file_exists(dirname($storage_filename)) ) {
         if( mkdir(dirname($storage_filename), 0755, true) === false ) {
             return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3359', 'msg'=>'Unable to find image', 'pmsg'=>'Unable to create storage directory'));

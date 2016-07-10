@@ -107,7 +107,11 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
         // Load the image in Imagemagic
         //
         $image = new Imagick();
-        $image->readImageBlob($rc['image']['image']);
+        if( $rc['image']['image'] != '' ) {
+            $image->readImageBlob($rc['image']['image']);
+        } else {
+            $image->newImage(500, 500, "#ffffff");
+        }
     }
 //  $last_updated = $rc['image']['last_updated'];
     $image->setImageFormat("jpeg");
