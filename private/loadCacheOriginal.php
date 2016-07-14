@@ -144,7 +144,7 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
     //
     // Fit the image into the constraints, if either dimension is larger.
     //
-    if( $image->getImageWidth() > $maxwidth || $image->getImageHeight() > $maxheight ) {
+    if( ($maxwidth != 0 || $maxheight != 0) && ($image->getImageWidth() > $maxwidth || $image->getImageHeight() > $maxheight) ) {
 //        error_log($maxwidth);
 //        error_log($maxheight);
 //        $image->resizeImage($maxwidth, $maxheight, imagick::FILTER_LANCZOS, 1, true);
