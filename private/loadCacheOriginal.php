@@ -45,6 +45,7 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
         . "IF(ciniki_images.last_updated > ciniki_image_versions.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_image_versions.last_updated)) AS last_updated "
         . "FROM ciniki_images, ciniki_image_versions "
         . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
+        . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
         . "AND ciniki_images.id = ciniki_image_versions.image_id "
         . "AND ciniki_image_versions.version = 'original' "
         . "";

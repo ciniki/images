@@ -21,6 +21,7 @@ function ciniki_images_addUserImage(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
+        'business_id'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Business'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;

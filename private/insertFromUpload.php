@@ -105,7 +105,8 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     //
     // Add code to check for duplicate image
     //
-    $strsql = "SELECT id, title, caption FROM ciniki_images "
+    $strsql = "SELECT id, title, caption "
+        . "FROM ciniki_images "
         . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
         . "AND user_id = '" . ciniki_core_dbQuote($ciniki, $user_id) . "' "
         . "AND checksum = '" . ciniki_core_dbQuote($ciniki, $checksum) . "' ";
@@ -126,17 +127,21 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     //
     // Get the business UUID
     //
-    $strsql = "SELECT uuid "
-        . "FROM ciniki_businesses "
-        . "WHERE id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' ";
-    $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.businesses', 'business');
-    if( $rc['stat'] != 'ok' ) {
-        return $rc;
+    if( $business_id > 0 ) {
+        $strsql = "SELECT uuid "
+            . "FROM ciniki_businesses "
+            . "WHERE id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' ";
+        $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.businesses', 'business');
+        if( $rc['stat'] != 'ok' ) {
+            return $rc;
+        }
+        if( !isset($rc['business']) ) {
+            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3349', 'msg'=>'Unable to get business details'));
+        }
+        $business_uuid = $rc['business']['uuid'];
+    } else {
+        $business_uuid = '0';
     }
-    if( !isset($rc['business']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3349', 'msg'=>'Unable to get business details'));
-    }
-    $business_uuid = $rc['business']['uuid'];
 
     //
     // Get a new UUID
