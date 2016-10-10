@@ -5,10 +5,6 @@
 // This function will load an image and apply all actions to the image
 // from the ciniki_image_actions table.
 //
-// Info
-// ----
-// Status:          defined
-//
 // Arguments
 // ---------
 // user_id:         The user making the request

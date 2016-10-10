@@ -8,6 +8,7 @@
 // Arguments
 // ---------
 // ciniki:
+// business_id:     The ID of the business the image is attached to.
 // image_id:        The ID of the image to load.
 // maxlength:       The maximum length of either side of the image.
 // 
@@ -57,7 +58,6 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
     $img = $rc['image'];
     $img_uuid = $rc['image']['uuid'];
 
-//  $cache_filename = $business_cache_dir . '/ciniki.images/t' . $maxlength . '/' . $image_id . '.jpg';
     $storage_filename = $business_storage_dir . '/ciniki.images/'
         . $img_uuid[0] . '/' . $img_uuid;
     $cache_filename = $business_cache_dir . '/ciniki.images/'
@@ -67,8 +67,7 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
     // Check if cached version is there, and there hasn't been any updates
     //
     $utc_offset = date_offset_get(new DateTime);
-    if( file_exists($cache_filename)
-        && (filemtime($cache_filename) - $utc_offset) > $img['last_updated'] ) {
+    if( file_exists($cache_filename) && filemtime($cache_filename) >= $img['last_updated'] ) {
         $imgblob = fread(fopen($cache_filename, 'r'), filesize($cache_filename));
         return array('stat'=>'ok', 'image'=>$imgblob, 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename']);
     }
@@ -114,7 +113,6 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
         }
     }
 
-//  $last_updated = $rc['image']['last_updated'];
     $image->setImageFormat("jpeg");
 
     //
@@ -148,7 +146,6 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
     // Check directory exists
     //
     if( !file_exists(dirname($cache_filename)) ) {
-        error_log("Creating cache dir: " . dirname($cache_filename));
         if( mkdir(dirname($cache_filename), 0755, true) === false ) {
             return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1428', 'msg'=>'Unable to find image', 'pmsg'=>'Unable to create cache directory'));
         }
@@ -162,6 +159,9 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
         $image->setImageCompressionQuality(40);
         fwrite($h, $image->getImageBlob());
         fclose($h);
+        //
+        // Update the file time to UTC so checking cache timestamps works properly in any timezone
+        //
         $dt = new DateTime('now', new DateTimeZone('UTC'));
         touch($cache_filename, $dt->getTimestamp());
     }

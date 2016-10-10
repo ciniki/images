@@ -68,13 +68,10 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
     // Check if cached version is there, and there hasn't been any updates
     //
     $utc_offset = date_offset_get(new DateTime);
-    if( file_exists($cache_filename)
-        && (filemtime($cache_filename) - $utc_offset) > $img['last_updated'] ) {
-        error_log('image ' . $image_id . ' from cache');
+    if( file_exists($cache_filename) && filemtime($cache_filename) >= $img['last_updated'] ) {
         $imgblob = fread(fopen($cache_filename, 'r'), filesize($cache_filename));
         return array('stat'=>'ok', 'image'=>$imgblob, 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename']);
     }
-    error_log('image ' . $image_id . ' from file');
 
     //
     // If the file does not exist, then load information from database, and create cache file
@@ -116,7 +113,7 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
             $image->newImage(500, 500, "#ffffff");
         }
     }
-//  $last_updated = $rc['image']['last_updated'];
+
     $image->setImageFormat("jpeg");
 
     //
@@ -148,9 +145,6 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
     // Fit the image into the constraints, if either dimension is larger.
     //
     if( ($maxwidth != 0 || $maxheight != 0) && ($image->getImageWidth() > $maxwidth || $image->getImageHeight() > $maxheight) ) {
-//        error_log($maxwidth);
-//        error_log($maxheight);
-//        $image->resizeImage($maxwidth, $maxheight, imagick::FILTER_LANCZOS, 1, true);
         $image->scaleImage($maxwidth, $maxheight);
     }
 
@@ -171,6 +165,9 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
         $image->setImageCompressionQuality(75);
         fwrite($h, $image->getImageBlob());
         fclose($h);
+        //
+        // Update the file time to UTC so checking cache timestamps works properly in any timezone
+        //
         $dt = new DateTime('now', new DateTimeZone('UTC'));
         touch($cache_filename, $dt->getTimestamp());
     }
