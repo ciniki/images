@@ -70,9 +70,11 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
     $utc_offset = date_offset_get(new DateTime);
     if( file_exists($cache_filename)
         && (filemtime($cache_filename) - $utc_offset) > $img['last_updated'] ) {
+        error_log('image ' . $image_id . ' from cache');
         $imgblob = fread(fopen($cache_filename, 'r'), filesize($cache_filename));
         return array('stat'=>'ok', 'image'=>$imgblob, 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename']);
     }
+    error_log('image ' . $image_id . ' from file');
 
     //
     // If the file does not exist, then load information from database, and create cache file
@@ -169,8 +171,9 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
         $image->setImageCompressionQuality(75);
         fwrite($h, $image->getImageBlob());
         fclose($h);
+        $dt = new DateTime('now', new DateTimeZone('UTC'));
+        touch($cache_filename, $dt->getTimestamp());
     }
-
 
     return array('stat'=>'ok', 'image'=>$image->getImageBlob(), 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename']);
 }

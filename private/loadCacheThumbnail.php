@@ -162,6 +162,8 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
         $image->setImageCompressionQuality(40);
         fwrite($h, $image->getImageBlob());
         fclose($h);
+        $dt = new DateTime('now', new DateTimeZone('UTC'));
+        touch($cache_filename, $dt->getTimestamp());
     }
 
     return array('stat'=>'ok', 'image'=>$image->getImageBlob(), 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename']);

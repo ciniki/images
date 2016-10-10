@@ -64,7 +64,6 @@ function ciniki_images_get($ciniki) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheOriginal');
         $rc = ciniki_images_loadCacheOriginal($ciniki, $args['business_id'], $args['image_id'], $args['maxwidth'], $args['maxheight']);
     }
-    error_log(print_r($rc, true));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
