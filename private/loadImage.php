@@ -42,10 +42,10 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
         . "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3354', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.89', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
     }
     if( !isset($rc['image']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3355', 'msg'=>'Unable to render image'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.90', 'msg'=>'Unable to render image'));
     }
 
     $img = $rc['image'];
@@ -67,10 +67,10 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'637', 'msg'=>'Unable to load image', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.91', 'msg'=>'Unable to load image', 'err'=>$rc['err']));
         }
         if( !isset($rc['image']) ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'638', 'msg'=>'Unable to load image'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.92', 'msg'=>'Unable to load image'));
         }
 
         //
@@ -97,7 +97,7 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
         . "ORDER BY sequence ";
     $rc = ciniki_core_dbQuery($ciniki, $strsql, 'ciniki.images');   
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'639', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.93', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
     }
     $dh = $rc['handle'];
 

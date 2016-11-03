@@ -36,10 +36,10 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
         . "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3356', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.121', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
     }
     if( !isset($rc['image']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3289', 'msg'=>'Unable to render image'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.122', 'msg'=>'Unable to render image'));
     }
     $last_updated = $rc['image']['last_updated'];
     $original_filename = $rc['image']['original_filename'];
@@ -75,13 +75,13 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'339', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.123', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
         }
         if( !isset($rc['image']['image']) ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'340', 'msg'=>'Unable to render image'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.124', 'msg'=>'Unable to render image'));
         }
         if( $rc['image']['image'] == '' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3379', 'msg'=>'Unable to render image'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.125', 'msg'=>'Unable to render image'));
         }
 
         //
@@ -102,7 +102,7 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
         . "ORDER BY sequence ";
     $rc = ciniki_core_dbQuery($ciniki, $strsql, 'ciniki.images');   
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'242', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.126', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
     }
     $dh = $rc['handle'];
 

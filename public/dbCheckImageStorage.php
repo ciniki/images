@@ -81,7 +81,7 @@ function ciniki_images_dbCheckImageStorage($ciniki) {
     }
 
     if( $missing != '' ) {  
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3360', 'msg'=>"Missing the following images in ($business_storage_dir): $missing"));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.137', 'msg'=>"Missing the following images in ($business_storage_dir): $missing"));
     }
 
     return array('stat'=>'ok');

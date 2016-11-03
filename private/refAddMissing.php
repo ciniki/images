@@ -22,16 +22,16 @@
 function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
 
     if( !isset($args['object']) || $args['object'] == '' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'904', 'msg'=>'No reference object specified'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.99', 'msg'=>'No reference object specified'));
     }
     if( !isset($args['object_table']) || $args['object_table'] == '' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'905', 'msg'=>'No reference object id specified'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.100', 'msg'=>'No reference object id specified'));
     }
     if( !isset($args['object_id_field']) || $args['object_id_field'] == '' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'909', 'msg'=>'No reference object id specified'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.101', 'msg'=>'No reference object id specified'));
     }
     if( !isset($args['object_field']) || $args['object_field'] == '' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'910', 'msg'=>'No reference object id specified'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.102', 'msg'=>'No reference object id specified'));
     }
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
@@ -109,7 +109,7 @@ function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
             ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
             $rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
             if( $rc['stat'] != 'ok' ) {
-                return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'477', 'msg'=>'Unable to save image reference', 'err'=>$rc['err'])); 
+                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.103', 'msg'=>'Unable to save image reference', 'err'=>$rc['err'])); 
             }
             $ref_id = $rc['insert_id'];
             $changelog_fields = array(

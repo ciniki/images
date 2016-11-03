@@ -67,11 +67,11 @@ function ciniki_images_add(&$ciniki) {
         // If a duplicate image is found, then use that id instead of uploading a new one
         if( $rc['stat'] != 'ok' && $rc['err']['code'] != '1856' ) {
             ciniki_core_dbTransactionRollback($ciniki, 'ciniki.images');
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1862', 'msg'=>'Internal Error', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.127', 'msg'=>'Internal Error', 'err'=>$rc['err']));
         }
         if( !isset($rc['id']) ) {
             ciniki_core_dbTransactionRollback($ciniki, 'ciniki.images');
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1863', 'msg'=>'Invalid file type'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.128', 'msg'=>'Invalid file type'));
         }
         $image_id = $rc['id'];
 
@@ -82,7 +82,7 @@ function ciniki_images_add(&$ciniki) {
         // Check to see if an image was uploaded
         //
         if( isset($_FILES['uploadfile']['error']) && $_FILES['uploadfile']['error'] == UPLOAD_ERR_INI_SIZE ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'656', 'msg'=>'Upload failed, file too large.'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.129', 'msg'=>'Upload failed, file too large.'));
         }
         // FIXME: Add other checkes for $_FILES['uploadfile']['error']
 
@@ -90,7 +90,7 @@ function ciniki_images_add(&$ciniki) {
         // Check for a uploaded file
         //
         if( !isset($_FILES) || !isset($_FILES['uploadfile']) || $_FILES['uploadfile']['tmp_name'] == '' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'657', 'msg'=>'Upload failed, no file specified.'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.130', 'msg'=>'Upload failed, no file specified.'));
         }
         $uploaded_file = $_FILES['uploadfile']['tmp_name'];
 
@@ -103,11 +103,11 @@ function ciniki_images_add(&$ciniki) {
         // If a duplicate image is found, then use that id instead of uploading a new one
         if( $rc['stat'] != 'ok' && $rc['err']['code'] != '330' ) {
             ciniki_core_dbTransactionRollback($ciniki, 'ciniki.images');
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'658', 'msg'=>'Internal Error', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.131', 'msg'=>'Internal Error', 'err'=>$rc['err']));
         }
         if( !isset($rc['id']) ) {
             ciniki_core_dbTransactionRollback($ciniki, 'ciniki.images');
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'659', 'msg'=>'Invalid file type'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.132', 'msg'=>'Invalid file type'));
         }
         $image_id = $rc['id'];
     }

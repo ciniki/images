@@ -95,7 +95,7 @@ foreach($images as $iid => $image) {
 
     if( !file_exists(dirname($storage_filename)) ) {
         if( mkdir(dirname($storage_filename), 0755, true) === false ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3359', 'msg'=>'Unable to find image', 'pmsg'=>'Unable to create storage directory'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.140', 'msg'=>'Unable to find image', 'pmsg'=>'Unable to create storage directory'));
         }
     }
 
@@ -115,10 +115,10 @@ foreach($images as $iid => $image) {
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3358', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.141', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
         }
         if( !isset($rc['image']) ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3357', 'msg'=>'Unable to render image'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.142', 'msg'=>'Unable to render image'));
         }
 
         //
@@ -135,7 +135,7 @@ foreach($images as $iid => $image) {
             fwrite($h, $image->getImageBlob());
             fclose($h);
         } else {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3346', 'msg'=>'Unable to add image'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.143', 'msg'=>'Unable to add image'));
         }
     }
 }

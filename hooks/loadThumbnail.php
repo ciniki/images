@@ -17,7 +17,7 @@
 function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
 
     if( !isset($args['image_id']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2656', 'msg'=>'Image not specified'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.18', 'msg'=>'Image not specified'));
     }
     if( !isset($args['maxlength']) ) {
         $args['maxlength'] = 150;
@@ -55,10 +55,10 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2657', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.19', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
     }
     if( !isset($rc['image']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2658', 'msg'=>'Unable to render image'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.20', 'msg'=>'Unable to render image'));
     }
     // Convert last_updated to timestamp
     $date = new DateTime($rc['image']['last_updated'], new DateTimeZone('UTC'));
@@ -112,10 +112,10 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2659', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.21', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
         }
         if( !isset($rc['image']) ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2660', 'msg'=>'Unable to render image'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.22', 'msg'=>'Unable to render image'));
         }
 
         //
@@ -142,7 +142,7 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
         . "ORDER BY sequence ";
     $rc = ciniki_core_dbQuery($ciniki, $strsql, 'ciniki.images');   
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2661', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.23', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
     }
     $dh = $rc['handle'];
 
@@ -177,7 +177,7 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
     //
     if( !file_exists(dirname($cache_filename)) ) {
         if( mkdir(dirname($cache_filename), 0755, true) === false ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2650', 'msg'=>'Unable to find image', 'pmsg'=>'Unable to create cache directory'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.24', 'msg'=>'Unable to find image', 'pmsg'=>'Unable to create cache directory'));
         }
     }
 

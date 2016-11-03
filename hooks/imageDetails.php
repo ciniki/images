@@ -33,14 +33,14 @@ function ciniki_images_hooks_imageDetails($ciniki, $business_id, $args) {
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2556', 'msg'=>'Unable to find image', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.1', 'msg'=>'Unable to find image', 'err'=>$rc['err']));
         }
         if( !isset($rc['image']) ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2557', 'msg'=>'Unable to find image'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.2', 'msg'=>'Unable to find image'));
         }
         $image = $rc['image'];
         return array('stat'=>'ok', 'image'=>$image);    
     }
 
-    return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2558', 'msg'=>'No image specified'));
+    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.3', 'msg'=>'No image specified'));
 }

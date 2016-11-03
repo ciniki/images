@@ -74,7 +74,7 @@ function ciniki_images_rotate(&$ciniki) {
         return $rc;
     }
     if( !isset($rc['image']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'660', 'msg'=>'Unable to find the image requested'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.138', 'msg'=>'Unable to find the image requested'));
     }
     $img = $rc['image'];
 
@@ -115,7 +115,7 @@ function ciniki_images_rotate(&$ciniki) {
         fwrite($h, $image->getImageBlob());
         fclose($h);
     } else {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3351', 'msg'=>'Unable to add image'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.139', 'msg'=>'Unable to add image'));
     }
 
     //

@@ -27,7 +27,7 @@ function ciniki_images_checkAccess($ciniki, $business_id, $method) {
 
     if( $method == 'dbPruneImages' ) {
         // Admin only function
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3361', 'msg'=>'Access denied.'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.25', 'msg'=>'Access denied.'));
     }
 
     //
@@ -61,6 +61,6 @@ function ciniki_images_checkAccess($ciniki, $business_id, $method) {
     //
     // By default, fail
     //
-    return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'655', 'msg'=>'Access denied.'));
+    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.26', 'msg'=>'Access denied.'));
 }
 ?>

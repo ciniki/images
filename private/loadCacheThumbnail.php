@@ -50,10 +50,10 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'661', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.83', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
     }
     if( !isset($rc['image']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'662', 'msg'=>'Unable to render image'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.84', 'msg'=>'Unable to render image'));
     }
     $img = $rc['image'];
     $img_uuid = $rc['image']['uuid'];
@@ -96,10 +96,10 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'624', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.85', 'msg'=>'Unable to render image', 'err'=>$rc['err']));
         }
         if( !isset($rc['image']['image']) ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'625', 'msg'=>'Unable to render image'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.86', 'msg'=>'Unable to render image'));
         }
 
         //
@@ -124,7 +124,7 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
         . "ORDER BY sequence ";
     $rc = ciniki_core_dbQuery($ciniki, $strsql, 'ciniki.images');   
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'626', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.87', 'msg'=>'Unable to apply image actions', 'err'=>$rc['err']));
     }
     $dh = $rc['handle'];
 
@@ -147,7 +147,7 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $business_id, $image_id, $ma
     //
     if( !file_exists(dirname($cache_filename)) ) {
         if( mkdir(dirname($cache_filename), 0755, true) === false ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1428', 'msg'=>'Unable to find image', 'pmsg'=>'Unable to create cache directory'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.88', 'msg'=>'Unable to find image', 'pmsg'=>'Unable to create cache directory'));
         }
     }
 
