@@ -65,7 +65,7 @@ function ciniki_images_add(&$ciniki) {
         $rc = ciniki_images_insertFromURL($ciniki, $args['business_id'], $ciniki['session']['user']['id'], 
             $args['url'], 1, basename($args['url']), '', 'no');
         // If a duplicate image is found, then use that id instead of uploading a new one
-        if( $rc['stat'] != 'ok' && $rc['err']['code'] != '1856' ) {
+        if( $rc['stat'] != 'ok' && $rc['err']['code'] != 'ciniki.images.53' ) {
             ciniki_core_dbTransactionRollback($ciniki, 'ciniki.images');
             return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.127', 'msg'=>'Internal Error', 'err'=>$rc['err']));
         }
@@ -101,7 +101,7 @@ function ciniki_images_add(&$ciniki) {
         $rc = ciniki_images_insertFromUpload($ciniki, $args['business_id'], $ciniki['session']['user']['id'], 
             $_FILES['uploadfile'], 1, $_FILES['uploadfile']['name'], '', 'no');
         // If a duplicate image is found, then use that id instead of uploading a new one
-        if( $rc['stat'] != 'ok' && $rc['err']['code'] != '330' ) {
+        if( $rc['stat'] != 'ok' && $rc['err']['code'] != 'ciniki.images.66' ) {
             ciniki_core_dbTransactionRollback($ciniki, 'ciniki.images');
             return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.131', 'msg'=>'Internal Error', 'err'=>$rc['err']));
         }
