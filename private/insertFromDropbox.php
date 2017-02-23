@@ -106,18 +106,18 @@ function ciniki_images_insertFromDropbox(&$ciniki, $business_id, $user_id, $clie
     // Get the type of photo (jpg, png, gif, tiff, bmp, etc)
     //
     $format = strtolower($image->getImageFormat());
-    $exif = array();
+//    $exif = array();
     $type = 0;
     if( $format == 'jpeg' ) {
         $type = 1;
-        $exif = $image->getImageProperties("exif:*");
+//        $exif = $image->getImageProperties("exif:*");
     } elseif( $format == 'png' ) {
         $type = 2;
     } elseif( $format == 'gif' ) {
         $type = 3;
     } elseif( $format == 'tiff' ) {
         $type = 4;
-        $exif = $image->getImageProperties("exif:*");
+//        $exif = $image->getImageProperties("exif:*");
     } elseif( $format == 'bmp' ) {
         $type = 5;
     } else {
@@ -273,7 +273,7 @@ function ciniki_images_insertFromDropbox(&$ciniki, $business_id, $user_id, $clie
     //
     // Add EXIF information to ciniki_image_details
     //
-    if( $exif !== false ) {
+/*    if( $exif !== false ) {
         foreach ($exif as $key => $section) {
             if( is_array($section) ) {
                 foreach ($section as $name => $val) {
@@ -294,7 +294,7 @@ function ciniki_images_insertFromDropbox(&$ciniki, $business_id, $user_id, $clie
                 }
             }
         }
-    }
+    } */
 
     //
     // sync the image, this will include the details

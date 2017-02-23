@@ -71,12 +71,12 @@ function ciniki_images_hooks_insertFromImagick(&$ciniki, $business_id, $args) {
     // Get the type of photo (jpg, png, gif, tiff, bmp, etc)
     //
     $format = strtolower($args['image']->getImageFormat());
-    $exif = array();
+//    $exif = array();
     $type = 0;
     if( $format == 'jpeg' ) {
         $type = 1;
 //      $exif = read_exif_data($upload_file['tmp_name']);
-        $exit = $args['image']->getImageProperties('exif:*');
+//        $exit = $args['image']->getImageProperties('exif:*');
     } elseif( $format == 'png' ) {
         $type = 2;
     } elseif( $format == 'gif' ) {
@@ -233,7 +233,7 @@ function ciniki_images_hooks_insertFromImagick(&$ciniki, $business_id, $args) {
     //
     // Add EXIF information to ciniki_image_details
     //
-    if( $exif !== false ) {
+/*    if( $exif !== false ) {
         foreach ($exif as $name => $val) {
             $strsql = "INSERT INTO ciniki_image_details (business_id, image_id, detail_key, detail_value, date_added, last_updated"
                 . ") VALUES ("
@@ -250,7 +250,7 @@ function ciniki_images_hooks_insertFromImagick(&$ciniki, $business_id, $args) {
                 'ciniki_image_history', $business_id, 
                 1, 'ciniki_image_details', $image_id, "exif.$name", $val);
         }
-    }
+    } */
 
     //
     // sync the image, this will include the details
