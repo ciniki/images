@@ -54,8 +54,15 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
         . $img['uuid'][0] . '/' . $img['uuid'];
 //    $last_updated = $img['last_updated'];
 
+    $dummy_image = 'no';
     if( file_exists($storage_filename) ) {
         $image = new Imagick($storage_filename);
+        try {
+            $image = new Imagick($storage_filename);
+        } catch (Exception $e) {
+            $image->newImage(500, 500, "#ffffff");
+            $dummy_image = 'yes';
+        }
     } else {
         //
         // Get the image data from the database for this version
@@ -81,6 +88,7 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
             $image->readImageBlob($rc['image']['image']);
         } else {
             $image->newImage(500, 500, "#ffffff");
+            $dummy_image = 'yes';
         }
     }
 
@@ -104,7 +112,7 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
     $result = ciniki_core_dbFetchHashRow($ciniki, $dh);
     while( isset($result['row']) ) {
         // Crop
-        if( $result['row']['action'] == 1 ) {
+        if( $result['row']['action'] == 1 && $dummy_image == 'no' ) {
             $params = explode(',', $result['row']['params']);
             $image->cropImage($params[0], $params[1], $params[2], $params[3]);
         }

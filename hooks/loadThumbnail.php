@@ -97,7 +97,11 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbFetchHashRow');
 
     if( file_exists($storage_filename) ) {
-        $image = new Imagick($storage_filename);
+        try {
+            $image = new Imagick($storage_filename);
+        } catch (Exception $e) {
+            $image->newImage(500, 500, "#ffffff");
+        }
     } else {
         //
         // Get the image data from the database for this version
