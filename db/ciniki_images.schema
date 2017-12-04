@@ -5,17 +5,17 @@
 # local disk as uploaded by the user, or on another hosted service like flickr.  The advantage to images
 # being on flickr is very fast load times, the flickr image farm is worldwide and loads from the closest.
 #
-# The images stored in this table can be linked or attached to a business and/or a user.  It depends
+# The images stored in this table can be linked or attached to a tenant and/or a user.  It depends
 # how and where the image was uploaded, determines how it is linked.  If the photo is uploaded by a 
-# user as their profile pic, then it should only be linked to the user, and the business_id should be 0.
+# user as their profile pic, then it should only be linked to the user, and the tnid should be 0.
 #
 # If the photo was uploaded through the media section of ciniki-monage, then it should be attached to both
-# the user who uploaded the photo, and the business the photo was uploaded into.
+# the user who uploaded the photo, and the tenant the photo was uploaded into.
 #
-# A photo could be added only linked to a business with user_id = 0, and that would give any 
-# owner or media manager in that business the right to edit/delete that photo.
+# A photo could be added only linked to a tenant with user_id = 0, and that would give any 
+# owner or media manager in that tenant the right to edit/delete that photo.
 #
-# The binary image data is stored in the database to make it easier to transfer business information
+# The binary image data is stored in the database to make it easier to transfer tenant information
 # from one server to another, without having to transfer files from disk.
 #
 # Images should only be stored once in the database, and referenced by the image_id multiple times if
@@ -26,15 +26,15 @@
 # ------
 # id:                   The unique ID of the image.
 # uuid:                 The Universal Unique ID for the image.
-# business_id:          The business the photo is attached to.  A profile pic for a user 
-#                       should not be attached to the business, it should only be attached
+# tnid:                 The tenant the photo is attached to.  A profile pic for a user 
+#                       should not be attached to the tenant, it should only be attached
 #                       to a user through user_id.
 #
 # user_id:              If a customer uploaded the photo, then it should be
 #                       attached to the user, so they have privileges on the photo.
-#                       If the photo is owned by the business, then the user_id = 0. 
+#                       If the photo is owned by the tenant, then the user_id = 0. 
 #
-# perms:                Assume private to user_id, and business owner.
+# perms:                Assume private to user_id, and tenant owner.
 #
 #                       *note* future use only, not currently implemented.  All images default to 1 - public.
 #
@@ -79,7 +79,7 @@
 create table ciniki_images (
     id int not null auto_increment,
     uuid char(36) not null,
-    business_id int not null,
+    tnid int not null,
     user_id int not null,
     perms tinyint unsigned not null,
     type tinyint unsigned not null,
@@ -92,7 +92,7 @@ create table ciniki_images (
     date_added datetime not null,
     last_updated datetime not null,
     primary key (id),
-    index (business_id, user_id),
+    index (tnid, user_id),
     index (remote_id),
-    index uuid (business_id, uuid, last_updated)
+    index uuid (tnid, uuid, last_updated)
 ) ENGINE=InnoDB, COMMENT='v1.04';

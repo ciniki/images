@@ -16,20 +16,20 @@
 // Returns
 // -------
 //
-function ciniki_images_getImage($ciniki, $business_id, $image_id, $version, $maxwidth, $maxheight) {
+function ciniki_images_getImage($ciniki, $tnid, $image_id, $version, $maxwidth, $maxheight) {
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 
     //
     // Get the modification information for this image
-    // The business_id is required to ensure a bug doesn't allow an image from another business.
+    // The tnid is required to ensure a bug doesn't allow an image from another tenant.
     //
     $strsql = "SELECT ciniki_images.date_added, ciniki_images.last_updated, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated "
         . "FROM ciniki_images, ciniki_image_versions "
         . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-        . "AND (ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-            . "OR (ciniki_images.business_id = 0 AND ciniki_images.user_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['user']['id']) . "') "
+        . "AND (ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
+            . "OR (ciniki_images.tnid = 0 AND ciniki_images.user_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['user']['id']) . "') "
             . ") "
         . "AND ciniki_images.id = ciniki_image_versions.image_id "
         . "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";

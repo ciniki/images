@@ -12,7 +12,7 @@
 // Returns
 // -------
 //
-function ciniki_images_getImageTitle($ciniki, $business_id, $image_id) {
+function ciniki_images_getImageTitle($ciniki, $tnid, $image_id) {
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
@@ -22,7 +22,7 @@ function ciniki_images_getImageTitle($ciniki, $business_id, $image_id) {
     //
     $strsql = "SELECT ciniki_images.title FROM ciniki_images "
         . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-        . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');
     if( $rc['stat'] != 'ok' ) {

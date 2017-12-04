@@ -27,7 +27,7 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
     //
     // Get the last updated
     //
-    $strsql = "SELECT ciniki_images.uuid, ciniki_images.business_id, ciniki_images.title, "
+    $strsql = "SELECT ciniki_images.uuid, ciniki_images.tnid, ciniki_images.title, "
         . "UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated, "
         . "ciniki_images.original_filename "
         . "FROM ciniki_images, ciniki_image_versions "
@@ -47,20 +47,20 @@ function ciniki_images_renderImage($ciniki, $image_id, $version, $maxwidth, $max
     $image = $rc['image'];
 
     //
-    // Get the business storage directory
+    // Get the tenant storage directory
     //
-    if( $image['business_id'] > 0 ) {
-        ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'storageDir');
-        $rc = ciniki_businesses_hooks_storageDir($ciniki, $image['business_id'], array());
+    if( $image['tnid'] > 0 ) {
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'hooks', 'storageDir');
+        $rc = ciniki_tenants_hooks_storageDir($ciniki, $image['tnid'], array());
         if( $rc['stat'] != 'ok' ) {
             return $rc;
         }
-        $business_storage_dir = $rc['storage_dir'];
+        $tenant_storage_dir = $rc['storage_dir'];
     } else {
-        $business_storage_dir = $ciniki['config']['ciniki.core']['storage_dir'] . '/0/0';
+        $tenant_storage_dir = $ciniki['config']['ciniki.core']['storage_dir'] . '/0/0';
     }
     
-    $storage_filename = $business_storage_dir . '/ciniki.images/'
+    $storage_filename = $tenant_storage_dir . '/ciniki.images/'
         . $image['uuid'][0] . '/' . $image['uuid'];
     
     if( file_exists($storage_filename) ) {

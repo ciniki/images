@@ -17,7 +17,7 @@ function ciniki_images_dbIntegrityCheck($ciniki) {
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'fix'=>array('required'=>'no', 'default'=>'no', 'name'=>'Fix Problems'),
         ));
     if( $rc['stat'] != 'ok' ) {
@@ -26,10 +26,10 @@ function ciniki_images_dbIntegrityCheck($ciniki) {
     $args = $rc['args'];
     
     //
-    // Check access to business_id as owner, or sys admin
+    // Check access to tnid as owner, or sys admin
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'checkAccess');
-    $rc = ciniki_images_checkAccess($ciniki, $args['business_id'], 'ciniki.images.dbIntegrityCheck', 0, 0);
+    $rc = ciniki_images_checkAccess($ciniki, $args['tnid'], 'ciniki.images.dbIntegrityCheck', 0, 0);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -47,7 +47,7 @@ function ciniki_images_dbIntegrityCheck($ciniki) {
     // Check for items that are missing a add value in history
     //
     if( $args['fix'] == 'yes' ) {
-        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.images', $args['business_id'],
+        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.images', $args['tnid'],
             'ciniki_images', 'ciniki_image_history', 
             array('uuid', 'user_id', 'perms', 'type', 'original_filename', 'remote_id', 
                 'title', 'caption', 'checksum'));
@@ -58,7 +58,7 @@ function ciniki_images_dbIntegrityCheck($ciniki) {
         //
         // Check ciniki_image_versions for missing history
         //
-        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.images', $args['business_id'],
+        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.images', $args['tnid'],
             'ciniki_image_versions', 'ciniki_image_history', 
             array('uuid', 'image_id','version','flags'));
         if( $rc['stat'] != 'ok' ) {
@@ -68,7 +68,7 @@ function ciniki_images_dbIntegrityCheck($ciniki) {
         //
         // Check ciniki_image_actions for missing history
         //
-        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.images', $args['business_id'],
+        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.images', $args['tnid'],
             'ciniki_image_actions', 'ciniki_image_history', 
             array('uuid', 'image_id','version','sequence', 'action', 'params'));
         if( $rc['stat'] != 'ok' ) {
@@ -78,7 +78,7 @@ function ciniki_images_dbIntegrityCheck($ciniki) {
         //
         // Check ciniki_image_refs for missing history
         //
-        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.images', $args['business_id'],
+        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.images', $args['tnid'],
             'ciniki_image_refs', 'ciniki_image_history', 
             array('uuid', 'ref_id','object','object_id', 'object_field'));
         if( $rc['stat'] != 'ok' ) {

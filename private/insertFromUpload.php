@@ -9,7 +9,7 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:     The ID of the business the photo is attached to.
+// tnid:     The ID of the tenant the photo is attached to.
 //
 // user_id:         The user_id to attach the photo to.  This may be 
 //                  different from the session user, as specified by
@@ -26,14 +26,14 @@
 // caption:         *optional* The caption for the image, may be left blank.
 //
 // force_duplicate: If this is set to 'yes' and the image crc32 checksum is found
-//                  already belonging to this business, the image will still be inserted 
+//                  already belonging to this tenant, the image will still be inserted 
 //                  into the database.
 // 
 // Returns
 // -------
 // The image ID that was added.
 //
-function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $upload_file, $perms, $name, $caption, $force_duplicate) {
+function ciniki_images_insertFromUpload(&$ciniki, $tnid, $user_id, $upload_file, $perms, $name, $caption, $force_duplicate) {
     //
     // Load the image into Imagick so it can be processed and uploaded
     //
@@ -107,7 +107,7 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     //
     $strsql = "SELECT id, title, caption "
         . "FROM ciniki_images "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND user_id = '" . ciniki_core_dbQuote($ciniki, $user_id) . "' "
         . "AND checksum = '" . ciniki_core_dbQuote($ciniki, $checksum) . "' ";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
@@ -125,22 +125,22 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     }
 
     //
-    // Get the business UUID
+    // Get the tenant UUID
     //
-    if( $business_id > 0 ) {
+    if( $tnid > 0 ) {
         $strsql = "SELECT uuid "
-            . "FROM ciniki_businesses "
-            . "WHERE id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' ";
-        $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.businesses', 'business');
+            . "FROM ciniki_tenants "
+            . "WHERE id = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' ";
+        $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.tenants', 'tenant');
         if( $rc['stat'] != 'ok' ) {
             return $rc;
         }
-        if( !isset($rc['business']) ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.67', 'msg'=>'Unable to get business details'));
+        if( !isset($rc['tenant']) ) {
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.67', 'msg'=>'Unable to get tenant details'));
         }
-        $business_uuid = $rc['business']['uuid'];
+        $tenant_uuid = $rc['tenant']['uuid'];
     } else {
-        $business_uuid = '0';
+        $tenant_uuid = '0';
     }
 
     //
@@ -157,7 +157,7 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     // Move the file to ciniki-storage
     //
     $storage_dirname = $ciniki['config']['ciniki.core']['storage_dir'] . '/'
-        . $business_uuid[0] . '/' . $business_uuid
+        . $tenant_uuid[0] . '/' . $tenant_uuid
         . '/ciniki.images/'
         . $uuid[0];
     $storage_filename = $storage_dirname . '/' . $uuid;
@@ -181,10 +181,10 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     //
     // Add to image table
     //
-    $strsql = "INSERT INTO ciniki_images (uuid, business_id, user_id, perms, type, original_filename, "
+    $strsql = "INSERT INTO ciniki_images (uuid, tnid, user_id, perms, type, original_filename, "
         . "remote_id, title, caption, checksum, date_added, last_updated, image) VALUES ( "
         . "'" . ciniki_core_dbQuote($ciniki, $uuid) . "', "
-        . "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
+        . "'" . ciniki_core_dbQuote($ciniki, $tnid) . "', "
         . "'" . ciniki_core_dbQuote($ciniki, $user_id) . "', "
         . "'" . ciniki_core_dbQuote($ciniki, $perms) . "', " 
         . "'" . ciniki_core_dbQuote($ciniki, $type) . "', "
@@ -217,19 +217,19 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_images', $image_id, 'uuid', $uuid);
+        $tnid, 1, 'ciniki_images', $image_id, 'uuid', $uuid);
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_images', $image_id, 'user_id', $user_id);
+        $tnid, 1, 'ciniki_images', $image_id, 'user_id', $user_id);
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_images', $image_id, 'perms', $perms);
+        $tnid, 1, 'ciniki_images', $image_id, 'perms', $perms);
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_images', $image_id, 'type', $type);
+        $tnid, 1, 'ciniki_images', $image_id, 'type', $type);
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_images', $image_id, 'original_filename', $original_filename);
+        $tnid, 1, 'ciniki_images', $image_id, 'original_filename', $original_filename);
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_images', $image_id, 'title', $name);
+        $tnid, 1, 'ciniki_images', $image_id, 'title', $name);
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_images', $image_id, 'caption', $caption);
+        $tnid, 1, 'ciniki_images', $image_id, 'caption', $caption);
 
     //
     // Add EXIF information to ciniki_image_details
@@ -238,9 +238,9 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
         foreach ($exif as $key => $section) {
             if( is_array($section) ) {
                 foreach ($section as $name => $val) {
-                    $strsql = "INSERT INTO ciniki_image_details (business_id, image_id, detail_key, detail_value, date_added, last_updated"
+                    $strsql = "INSERT INTO ciniki_image_details (tnid, image_id, detail_key, detail_value, date_added, last_updated"
                         . ") VALUES ("
-                        . "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
+                        . "'" . ciniki_core_dbQuote($ciniki, $tnid) . "', "
                         . "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
                         . "'" . ciniki_core_dbQuote($ciniki, "exif.$key.$name") . "', "
                         . "'" . ciniki_core_dbQuote($ciniki, $val) . "', "
@@ -250,7 +250,7 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
                         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.72', 'msg'=>'Unable to upload image', 'err'=>$rc['err'])); 
                     }
                     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 
-                        'ciniki_image_history', $business_id, 
+                        'ciniki_image_history', $tnid, 
                         1, 'ciniki_image_details', $image_id, "exif.$key.$name", $val);
                 }
             }
@@ -304,11 +304,11 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     //
     // Add the original version in the ciniki_image_versions table
     //
-    $strsql = "INSERT INTO ciniki_image_versions (uuid, business_id, image_id, "
+    $strsql = "INSERT INTO ciniki_image_versions (uuid, tnid, image_id, "
         . "version, flags, date_added, last_updated"
         . ") VALUES ("
         . "'" . ciniki_core_dbQuote($ciniki, $uuid) . "', "
-        . "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
+        . "'" . ciniki_core_dbQuote($ciniki, $tnid) . "', "
         . "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', 'original', "
         . ciniki_core_dbQuote($ciniki, $flags) . ", UTC_TIMESTAMP(), UTC_TIMESTAMP())";
     $rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
@@ -317,13 +317,13 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     }
     $version_id = $rc['insert_id'];
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_image_versions', $version_id, 'uuid', $uuid);
+        $tnid, 1, 'ciniki_image_versions', $version_id, 'uuid', $uuid);
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_image_versions', $version_id, 'image_id', $image_id);
+        $tnid, 1, 'ciniki_image_versions', $version_id, 'image_id', $image_id);
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_image_versions', $version_id, 'version', 'original');
+        $tnid, 1, 'ciniki_image_versions', $version_id, 'version', 'original');
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_image_versions', $version_id, 'flags', $flags);
+        $tnid, 1, 'ciniki_image_versions', $version_id, 'flags', $flags);
     $ciniki['syncqueue'][] = array('push'=>'ciniki.images.version',
         'args'=>array('id'=>$version_id));
 
@@ -340,11 +340,11 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     //
     // Add the thumbnail version into the ciniki_image_versions table
     //
-    $strsql = "INSERT INTO ciniki_image_versions (uuid, business_id, image_id, "
+    $strsql = "INSERT INTO ciniki_image_versions (uuid, tnid, image_id, "
         . "version, flags, date_added, last_updated"
         . ") VALUES ("
         . "'" . ciniki_core_dbQuote($ciniki, $uuid) . "', "
-        . "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
+        . "'" . ciniki_core_dbQuote($ciniki, $tnid) . "', "
         . "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
         . "'thumbnail', 0x03, UTC_TIMESTAMP(), UTC_TIMESTAMP())";
     $rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.images');
@@ -353,13 +353,13 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     }
     $version_id = $rc['insert_id'];
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_image_versions', $version_id, 'uuid', $uuid);
+        $tnid, 1, 'ciniki_image_versions', $version_id, 'uuid', $uuid);
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_image_versions', $version_id, 'image_id', $image_id);
+        $tnid, 1, 'ciniki_image_versions', $version_id, 'image_id', $image_id);
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_image_versions', $version_id, 'version', 'thumbnail');
+        $tnid, 1, 'ciniki_image_versions', $version_id, 'version', 'thumbnail');
     ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-        $business_id, 1, 'ciniki_image_versions', $version_id, 'flags', 3);
+        $tnid, 1, 'ciniki_image_versions', $version_id, 'flags', 3);
     $ciniki['syncqueue'][] = array('push'=>'ciniki.images.version',
         'args'=>array('id'=>$version_id));
 
@@ -377,11 +377,11 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
     // Insert the crop action into the ciniki_image_actions table for the thumbnail, if the original was not square
     //
     if( $thumb_crop_data != '' ) {
-        $strsql = "INSERT INTO ciniki_image_actions (uuid, business_id, image_id, "
+        $strsql = "INSERT INTO ciniki_image_actions (uuid, tnid, image_id, "
             . "version, sequence, action, params, date_added, last_updated"
             . ") VALUES ("
             . "'" . ciniki_core_dbQuote($ciniki, $uuid) . "', "
-            . "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
+            . "'" . ciniki_core_dbQuote($ciniki, $tnid) . "', "
             . "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
             . "'thumbnail', 1, 1, "
             . "'" . ciniki_core_dbQuote($ciniki, $thumb_crop_data) . "', "
@@ -392,27 +392,27 @@ function ciniki_images_insertFromUpload(&$ciniki, $business_id, $user_id, $uploa
         }
         $action_id = $rc['insert_id'];
         ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-            $business_id, 1, 'ciniki_image_actions', $action_id, 'uuid', $uuid);
+            $tnid, 1, 'ciniki_image_actions', $action_id, 'uuid', $uuid);
         ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-            $business_id, 1, 'ciniki_image_actions', $action_id, 'image_id', $image_id);
+            $tnid, 1, 'ciniki_image_actions', $action_id, 'image_id', $image_id);
         ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-            $business_id, 1, 'ciniki_image_actions', $action_id, 'version', 'thumbnail');
+            $tnid, 1, 'ciniki_image_actions', $action_id, 'version', 'thumbnail');
         ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-            $business_id, 1, 'ciniki_image_actions', $action_id, 'sequence', 1);
+            $tnid, 1, 'ciniki_image_actions', $action_id, 'sequence', 1);
         ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-            $business_id, 1, 'ciniki_image_actions', $action_id, 'action', 1);
+            $tnid, 1, 'ciniki_image_actions', $action_id, 'action', 1);
         ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-            $business_id, 1, 'ciniki_image_actions', $action_id, 'params', $thumb_crop_data);
+            $tnid, 1, 'ciniki_image_actions', $action_id, 'params', $thumb_crop_data);
         $ciniki['syncqueue'][] = array('push'=>'ciniki.images.action',
             'args'=>array('id'=>$action_id));
     }
 
     //
-    // Update the last_change date in the business modules
+    // Update the last_change date in the tenant modules
     // Ignore the result, as we don't want to stop user updates if this fails.
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-    ciniki_businesses_updateModuleChangeDate($ciniki, $business_id, 'ciniki', 'images');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'updateModuleChangeDate');
+    ciniki_tenants_updateModuleChangeDate($ciniki, $tnid, 'ciniki', 'images');
 
     return array('stat'=>'ok', 'id'=>$image_id);
 }

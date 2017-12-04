@@ -3,5 +3,5 @@
 # which is required for the sync to work.
 #
 ALTER TABLE ciniki_images ADD COLUMN uuid char(36) not null AFTER id;
-CREATE INDEX uuid ON ciniki_images (business_id, uuid, last_updated);
+CREATE INDEX uuid ON ciniki_images (tnid, uuid, last_updated);
 ALTER TABLE ciniki_images COMMENT='v1.03';
