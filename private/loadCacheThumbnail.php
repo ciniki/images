@@ -15,7 +15,7 @@
 // Returns
 // -------
 //
-function ciniki_images_loadCacheThumbnail(&$ciniki, $tnid, $image_id, $maxlength) {
+function ciniki_images_loadCacheThumbnail(&$ciniki, $tnid, $image_id, $maxlength, $maxheight=0) {
 
     //
     // Get the tenant cache directory
@@ -140,7 +140,7 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $tnid, $image_id, $maxlength
         $result = ciniki_core_dbFetchHashRow($ciniki, $dh);
     }
 
-    $image->thumbnailImage($maxlength, 0);
+    $image->thumbnailImage($maxlength, $maxheight);
 
     //
     // Check directory exists
