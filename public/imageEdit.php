@@ -25,6 +25,7 @@ function ciniki_images_imageEdit($ciniki) {
         'version'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Version'),
         'action'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Action'),
         'position'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Position'),
+        'amount'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Amount'),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
@@ -113,6 +114,7 @@ function ciniki_images_imageEdit($ciniki) {
         foreach($actions as $action) {
             if( $action['action'] == 1 && isset($args['position']) ) {
                 $thumb_crop_data = $action['params'];
+                list($w, $h, $x, $y) = explode(',', $action['params']);
                 if( $width < $height ) {
                     $offset = floor(($height-$width)/2);
                     if( $args['position'] == 'topleft' ) {
@@ -121,6 +123,18 @@ function ciniki_images_imageEdit($ciniki) {
                         $thumb_crop_data = $width . ',' . $width . ',0,' . $offset;
                     } elseif( $args['position'] == 'bottomright' ) {
                         $thumb_crop_data = $width . ',' . $width . ',0,' . ($height-$width);
+                    } elseif( $args['position'] == 'upleft' && isset($args['amount']) && $args['amount'] != '' ) {
+                        $y += (($args['amount']/100) * $height);
+                        if( $y < 0 ) {
+                            $y = 0;
+                        }
+                        $thumb_crop_data = $width . ',' . $width . ',0,' . $y;
+                    } elseif( $args['position'] == 'downright' && isset($args['amount']) && $args['amount'] != '' ) {
+                        $y -= (($args['amount']/100) * $height);
+                        if( $y > ($height-$width) ) {
+                            $y = ($height-$widht);
+                        }
+                        $thumb_crop_data = $width . ',' . $width . ',0,' . $y;
                     }
                 } elseif( $width > $height ) {
                     $offset = floor(($width-$height)/2);
@@ -130,6 +144,18 @@ function ciniki_images_imageEdit($ciniki) {
                         $thumb_crop_data = $height . ',' . $height . ',' . $offset . ',0';
                     } elseif( $args['position'] == 'bottomright' ) {
                         $thumb_crop_data = $height . ',' . $height . ',' . ($width-$height) . ',0';
+                    } elseif( $args['position'] == 'upleft' && isset($args['amount']) && $args['amount'] != '' ) {
+                        $x += (($args['amount']/100) * $width);
+                        if( $x < 0 ) {
+                            $x = 0;
+                        }
+                        $thumb_crop_data = $height . ',' . $height . ',' . $x . ',0';
+                    } elseif( $args['position'] == 'downright' && isset($args['amount']) && $args['amount'] != '' ) {
+                        $x -= (($args['amount']/100) * $width);
+                        if( $x > ($width-$height) ) {
+                            $x = ($width-$height);
+                        }
+                        $thumb_crop_data = $height . ',' . $height . ',' . $x . ',0';
                     }
                 }
                 if( $thumb_crop_data != $action['params'] ) {

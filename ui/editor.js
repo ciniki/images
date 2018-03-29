@@ -5,25 +5,38 @@ function ciniki_images_editor() {
     //
     // images panel
     //
-    this.main = new M.panel('Image Cropper', 'ciniki_images_editor', 'main', 'mc', 'medium', 'sectioned', 'ciniki.images.editor.main');
+    this.main = new M.panel('Image Cropper', 'ciniki_images_editor', 'main', 'mc', 'narrow narrowaside', 'sectioned', 'ciniki.images.editor.main');
     this.main.image_id = 0;
     this.main.data = {};
     this.main.sections = {
-        '_image':{'label':'', 'type':'imageform', 'fields':{
-            'image_id':{'label':'', 'type':'image_id', 'version':'thumbnail', 'hidelabel':'yes', 'history':'no'},
+        'thumbnail_image':{'label':'Thumbnail', 'type':'imageform', 'aside':'yes', 'fields':{
+            't_image_id':{'label':'', 'type':'image_id', 'version':'thumbnail', 'hidelabel':'yes', 'history':'no'},
             }},
-        '_crop':{'label':'Crop', 'buttons':{
-            'topleft':{'label':'Top Left', 'fn':'M.ciniki_images_editor.main.crop("topleft");'},
-            'center':{'label':'Center', 'fn':'M.ciniki_images_editor.main.crop("center");'},
-            'bottomright':{'label':'Bottom Right', 'fn':'M.ciniki_images_editor.main.crop("bottomright");'},
+        'original_image':{'label':'Original', 'type':'imageform', 'aside':'yes', 'fields':{
+            'o_image_id':{'label':'', 'type':'image_id', 'version':'original', 'hidelabel':'yes', 'history':'no'},
+            }},
+        '_quickcrop':{'label':'Quick Crop', 'buttons':{
+            'topleft':{'label':'Top Left', 'fn':'M.ciniki_images_editor.main.crop("topleft","");'},
+            'center':{'label':'Center', 'fn':'M.ciniki_images_editor.main.crop("center","");'},
+            'bottomright':{'label':'Bottom Right', 'fn':'M.ciniki_images_editor.main.crop("bottomright","");'},
+            }},
+        '_crop':{'label':'Adjust Crop', 'buttons':{
+            'minus10':{'label':'Up/Left 10%', 'fn':'M.ciniki_images_editor.main.crop("upleft", 10);'},
+            'minus05':{'label':'Up/Left 5%', 'fn':'M.ciniki_images_editor.main.crop("upleft", 5);'},
+            'plus05':{'label':'Down/Right 5%', 'fn':'M.ciniki_images_editor.main.crop("downright", 5);'},
+            'plus10':{'label':'Down/Right 10%', 'fn':'M.ciniki_images_editor.main.crop("downright", 10);'},
             }},
         };
-    this.main.fieldValue = function(s, i, d) { return this.data[i]; }
+    this.main.fieldValue = function(s, i, d) { 
+        if( s == 'thumbnail_image' || s == 'original_image' ) {
+            return this.data['image_id']; 
+        }
+    }
     this.main.fieldHistoryArgs = function(s, i) {
         return {'method':'ciniki.images.imageHistory', 'args':{'tnid':M.curTenantID, 'image_id':this.image_id, 'field':i}};
     }
-    this.main.crop = function(pos) {
-        M.api.getJSONCb('ciniki.images.imageEdit', {'tnid':M.curTenantID, 'image_id':this.image_id, 'version':'thumbnail', 'action':'crop', 'position':pos}, function(rsp) {
+    this.main.crop = function(pos, amt) {
+        M.api.getJSONCb('ciniki.images.imageEdit', {'tnid':M.curTenantID, 'image_id':this.image_id, 'version':'thumbnail', 'action':'crop', 'position':pos, 'amount':amt}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
                 return false;
