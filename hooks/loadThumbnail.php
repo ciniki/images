@@ -14,7 +14,7 @@
 // Returns
 // -------
 //
-function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
+function ciniki_images_hooks_loadThumbnail(&$ciniki, $tnid, $args) {
 
     if( !isset($args['image_id']) ) {
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.18', 'msg'=>'Image not specified'));
@@ -24,24 +24,24 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
     }
 
     //
-    // Get the business cache directory
+    // Get the tenant cache directory
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'cacheDir');
-    $rc = ciniki_businesses_hooks_cacheDir($ciniki, $business_id, array());
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'hooks', 'cacheDir');
+    $rc = ciniki_tenants_hooks_cacheDir($ciniki, $tnid, array());
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
-    $business_cache_dir = $rc['cache_dir'];
+    $tenant_cache_dir = $rc['cache_dir'];
     
     //
-    // Get the business storage directory
+    // Get the tenant storage directory
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'storageDir');
-    $rc = ciniki_businesses_hooks_storageDir($ciniki, $business_id, array());
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'hooks', 'storageDir');
+    $rc = ciniki_tenants_hooks_storageDir($ciniki, $tnid, array());
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
-    $business_storage_dir = $rc['storage_dir'];
+    $tenant_storage_dir = $rc['storage_dir'];
     
     //
     // Get the last updated timestamp
@@ -66,9 +66,9 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $business_id, $args) {
     $img = $rc['image'];
     $img_uuid = $rc['image']['uuid'];
 
-    $storage_filename = $business_storage_dir . '/ciniki.images/'
+    $storage_filename = $tenant_storage_dir . '/ciniki.images/'
         . $img_uuid[0] . '/' . $img_uuid;
-    $cache_filename = $business_cache_dir . '/ciniki.images/'
+    $cache_filename = $tenant_cache_dir . '/ciniki.images/'
         . $img_uuid[0] . '/' . $img_uuid . '/t' . $args['maxlength'] . '.jpg';
 
     //

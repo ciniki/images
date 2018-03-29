@@ -8,20 +8,20 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:     The ID of the business to get the images from.
+// tnid:     The ID of the tenant to get the images from.
 // images:          The list of image ID's to get from the database.
 // 
 // Returns
 // -------
 //
-function ciniki_images_getImagesFromArray($ciniki, $business_id, $images) {
+function ciniki_images_getImagesFromArray($ciniki, $tnid, $images) {
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuoteIDs');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashIDQuery');
 
     $strsql = "SELECT id, perms, type, title, caption "
         . "FROM ciniki_images "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND id IN (" . ciniki_core_dbQuoteIDs($ciniki, $images) . ")";
     return ciniki_core_dbHashIDQuery($ciniki, $strsql, 'ciniki.images', 'images', 'id');
 }

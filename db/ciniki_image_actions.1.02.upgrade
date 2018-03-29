@@ -5,9 +5,9 @@
 ALTER TABLE ciniki_image_actions DROP PRIMARY KEY;
 ALTER TABLE ciniki_image_actions ADD COLUMN id int not null PRIMARY KEY auto_increment FIRST;
 ALTER TABLE ciniki_image_actions ADD COLUMN uuid char(36) not null AFTER id;
-ALTER TABLE ciniki_image_actions ADD COLUMN business_id int not null AFTER uuid;
+ALTER TABLE ciniki_image_actions ADD COLUMN tnid int not null AFTER uuid;
 UPDATE ciniki_image_actions SET uuid = uuid();
-UPDATE ciniki_image_actions SET business_id = (SELECT business_id FROM ciniki_images WHERE ciniki_images.id = ciniki_image_actions.image_id);
+UPDATE ciniki_image_actions SET tnid = (SELECT tnid FROM ciniki_images WHERE ciniki_images.id = ciniki_image_actions.image_id);
 CREATE UNIQUE INDEX image_id ON ciniki_image_actions (image_id, version, sequence);
-CREATE INDEX uuid ON ciniki_image_actions (business_id, uuid, last_updated);
+CREATE INDEX uuid ON ciniki_image_actions (tnid, uuid, last_updated);
 ALTER TABLE ciniki_image_actions COMMENT='v1.02';

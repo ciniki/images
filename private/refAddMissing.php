@@ -7,7 +7,7 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:     The ID of the business the reference is for.
+// tnid:     The ID of the tenant the reference is for.
 //
 // args:            The arguments for adding the reference.
 //
@@ -19,7 +19,7 @@
 // -------
 // <rsp stat="ok" id="45" />
 //
-function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
+function ciniki_images_refAddMissing(&$ciniki, $module, $tnid, $args) {
 
     if( !isset($args['object']) || $args['object'] == '' ) {
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.99', 'msg'=>'No reference object specified'));
@@ -41,7 +41,7 @@ function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
     $strsql = "SELECT " . $args['object_id_field'] . " "
         . ", " . $args['object_field'] . " "
         . "FROM " . $args['object_table'] . " "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND " . $args['object_field'] . " > 0 "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, $module, 'item');
@@ -59,7 +59,7 @@ function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
     //
     $strsql = "SELECT CONCAT_WS('-', object_id, ref_id) AS refid "
         . "FROM ciniki_image_refs "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND object = '" . ciniki_core_dbQuote($ciniki, $args['object']) . "' "
         . "";
     $rc = ciniki_core_dbHashIDQuery($ciniki, $strsql, 'ciniki.images', 'refs', 'refid');
@@ -96,11 +96,11 @@ function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
             //
             // Add the reference
             //
-            $strsql = "INSERT INTO ciniki_image_refs (uuid, business_id, ref_id, "
+            $strsql = "INSERT INTO ciniki_image_refs (uuid, tnid, ref_id, "
                 . "object, object_id, object_field, date_added, last_updated"
                 . ") VALUES ("
                 . "'" . ciniki_core_dbQuote($ciniki, $new_item['uuid']) . "', "
-                . "'" . ciniki_core_dbQuote($ciniki, $business_id) . "', "
+                . "'" . ciniki_core_dbQuote($ciniki, $tnid) . "', "
                 . "'" . ciniki_core_dbQuote($ciniki, $new_item['ref_id']) . "', "
                 . "'" . ciniki_core_dbQuote($ciniki, $new_item['object']) . "', "
                 . "'" . ciniki_core_dbQuote($ciniki, $new_item['object_id']) . "', "
@@ -121,7 +121,7 @@ function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
                 );
             foreach($changelog_fields as $field) {
                 ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.images', 'ciniki_image_history', 
-                    $business_id, 1, 'ciniki_image_refs', $ref_id, $field, $new_item[$field]);
+                    $tnid, 1, 'ciniki_image_refs', $ref_id, $field, $new_item[$field]);
             }
             $ciniki['syncqueue'][] = array('push'=>'ciniki.images.ref',
                 'args'=>array('id'=>$ref_id));
@@ -130,12 +130,12 @@ function ciniki_images_refAddMissing(&$ciniki, $module, $business_id, $args) {
     }
 
     //
-    // Update the last_change date in the business modules
+    // Update the last_change date in the tenant modules
     // Ignore the result, as we don't want to stop user updates if this fails.
     //
     if( $db_updated == 1 ) {
-        ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-        ciniki_businesses_updateModuleChangeDate($ciniki, $business_id, 'ciniki', 'images');
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'updateModuleChangeDate');
+        ciniki_tenants_updateModuleChangeDate($ciniki, $tnid, 'ciniki', 'images');
     }
 
     return array('stat'=>'ok');

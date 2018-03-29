@@ -13,7 +13,7 @@
 // -------
 // returns an imageMagick image handle
 //
-function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
+function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
 
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
@@ -22,14 +22,14 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbFetchHashRow');
 
     //
-    // Get the business storage directory
+    // Get the tenant storage directory
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'storageDir');
-    $rc = ciniki_businesses_hooks_storageDir($ciniki, $business_id, array());
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'hooks', 'storageDir');
+    $rc = ciniki_tenants_hooks_storageDir($ciniki, $tnid, array());
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
-    $business_storage_dir = $rc['storage_dir'];
+    $tenant_storage_dir = $rc['storage_dir'];
     
     //
     // Get the last updated
@@ -37,7 +37,7 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
     $strsql = "SELECT ciniki_images.uuid, ciniki_images.title, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated "
         . "FROM ciniki_images, ciniki_image_versions "
         . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-        . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_images.id = ciniki_image_versions.image_id "
         . "AND ciniki_image_versions.version = '" . ciniki_core_dbQuote($ciniki, $version) . "' ";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
@@ -50,7 +50,7 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
 
     $img = $rc['image'];
 
-    $storage_filename = $business_storage_dir . '/ciniki.images/'
+    $storage_filename = $tenant_storage_dir . '/ciniki.images/'
         . $img['uuid'][0] . '/' . $img['uuid'];
 //    $last_updated = $img['last_updated'];
 
@@ -70,7 +70,7 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
         $strsql = "SELECT ciniki_images.image "
             . "FROM ciniki_images "
             . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-            . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
         if( $rc['stat'] != 'ok' ) {
@@ -100,7 +100,7 @@ function ciniki_images_loadImage($ciniki, $business_id, $image_id, $version) {
     $strsql = "SELECT sequence, action, params "
         . "FROM ciniki_image_actions "
         . "WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-        . "AND business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND version = '" . ciniki_core_dbQuote($ciniki, $version) . "' "
         . "ORDER BY sequence ";
     $rc = ciniki_core_dbQuery($ciniki, $strsql, 'ciniki.images');   

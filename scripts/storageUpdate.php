@@ -57,13 +57,13 @@ ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheOrigina
 // Get the list of images
 //
 $strsql = "SELECT "
-    . "ciniki_businesses.id AS business_id, "
-    . "IFNULL(ciniki_businesses.uuid, '0') AS business_uuid, "
+    . "ciniki_tenants.id AS tnid, "
+    . "IFNULL(ciniki_tenants.uuid, '0') AS tenant_uuid, "
     . "ciniki_images.id AS image_id, "
     . "ciniki_images.uuid AS image_uuid, "
     . "UNIX_TIMESTAMP(ciniki_images.last_updated) AS last_updated "
     . "FROM ciniki_images "
-    . "LEFT JOIN ciniki_businesses ON (ciniki_images.business_id = ciniki_businesses.id) "
+    . "LEFT JOIN ciniki_tenants ON (ciniki_images.tnid = ciniki_tenants.id) "
     . "";
 /*
 if( !isset($argv[1]) ) {
@@ -89,7 +89,7 @@ $utc_offset = date_offset_get(new DateTime);
 foreach($images as $iid => $image) {
     $storage_filename = $ciniki['config']['ciniki.core']['storage_dir'] 
         . '/'
-        . $image['business_uuid'][0] . '/' . $image['business_uuid']
+        . $image['tenant_uuid'][0] . '/' . $image['tenant_uuid']
         . '/ciniki.images/' 
         . $image['image_uuid'][0] . '/' . $image['image_uuid'];
 

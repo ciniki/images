@@ -8,7 +8,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:         The ID of the business to get the image from.
+// tnid:         The ID of the tenant to get the image from.
 // image_id:            The ID if the image requested.
 // version:             The version of the image (original, thumbnail)
 //
@@ -34,7 +34,7 @@ function ciniki_images_get($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'image_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Image'), 
         'version'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Version'),
         'maxwidth'=>array('required'=>'no', 'default'=>'0', 'blank'=>'no', 'name'=>'Maximum Width'),
@@ -47,22 +47,22 @@ function ciniki_images_get($ciniki) {
 
     //  
     // Make sure this module is activated, and 
-    // check session user permission to run this function for this business
+    // check session user permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'checkAccess');
-    $rc = ciniki_images_checkAccess($ciniki, $args['business_id'], 'ciniki.images.get', array()); 
+    $rc = ciniki_images_checkAccess($ciniki, $args['tnid'], 'ciniki.images.get', array()); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }
     
     //ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'getImage');
-    //return ciniki_images_getImage($ciniki, $args['business_id'], $args['image_id'], $args['version'], $args['maxwidth'], $args['maxheight']);
+    //return ciniki_images_getImage($ciniki, $args['tnid'], $args['image_id'], $args['version'], $args['maxwidth'], $args['maxheight']);
     if( $args['version'] == 'thumbnail' ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheThumbnail');
-        $rc = ciniki_images_loadCacheThumbnail($ciniki, $args['business_id'], $args['image_id'], $args['maxwidth'], $args['maxheight']);
+        $rc = ciniki_images_loadCacheThumbnail($ciniki, $args['tnid'], $args['image_id'], $args['maxwidth'], $args['maxheight']);
     } else {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheOriginal');
-        $rc = ciniki_images_loadCacheOriginal($ciniki, $args['business_id'], $args['image_id'], $args['maxwidth'], $args['maxheight']);
+        $rc = ciniki_images_loadCacheOriginal($ciniki, $args['tnid'], $args['image_id'], $args['maxwidth'], $args['maxheight']);
     }
     if( $rc['stat'] != 'ok' ) {
         return $rc;

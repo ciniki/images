@@ -8,7 +8,7 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:     The ID of the business the image is attached to.
+// tnid:     The ID of the tenant the image is attached to.
 // image_id:        The ID of the image to load.
 // maxwidth:        The maximum length of either side of the image.
 // maxheight:       The maximum height of the image.
@@ -16,27 +16,27 @@
 // Returns
 // -------
 //
-function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $maxwidth, $maxheight) {
+function ciniki_images_loadCacheOriginal(&$ciniki, $tnid, $image_id, $maxwidth, $maxheight) {
 
     //
-    // Get the business cache directory
+    // Get the tenant cache directory
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'cacheDir');
-    $rc = ciniki_businesses_hooks_cacheDir($ciniki, $business_id, array());
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'hooks', 'cacheDir');
+    $rc = ciniki_tenants_hooks_cacheDir($ciniki, $tnid, array());
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
-    $business_cache_dir = $rc['cache_dir'];
+    $tenant_cache_dir = $rc['cache_dir'];
     
     //
-    // Get the business storage directory
+    // Get the tenant storage directory
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'hooks', 'storageDir');
-    $rc = ciniki_businesses_hooks_storageDir($ciniki, $business_id, array());
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'hooks', 'storageDir');
+    $rc = ciniki_tenants_hooks_storageDir($ciniki, $tnid, array());
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
-    $business_storage_dir = $rc['storage_dir'];
+    $tenant_storage_dir = $rc['storage_dir'];
     
     //
     // Get the last updated timestamp
@@ -45,7 +45,7 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
         . "IF(ciniki_images.last_updated > ciniki_image_versions.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_image_versions.last_updated)) AS last_updated "
         . "FROM ciniki_images, ciniki_image_versions "
         . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
-        . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_images.id = ciniki_image_versions.image_id "
         . "AND ciniki_image_versions.version = 'original' "
         . "";
@@ -59,9 +59,9 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $business_id, $image_id, $max
     $img = $rc['image'];
     $img_uuid = $rc['image']['uuid'];
 
-    $storage_filename = $business_storage_dir . '/ciniki.images/'
+    $storage_filename = $tenant_storage_dir . '/ciniki.images/'
         . $img_uuid[0] . '/' . $img_uuid;
-    $cache_filename = $business_cache_dir . '/ciniki.images/'
+    $cache_filename = $tenant_cache_dir . '/ciniki.images/'
         . $img_uuid[0] . '/' . $img_uuid . '/o' . $maxwidth . '-' . $maxheight . '.jpg';
 
     //

@@ -9,7 +9,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to add the image to.
+// tnid:     The ID of the tenant to add the image to.
 // 
 // Returns
 // -------
@@ -21,20 +21,20 @@ function ciniki_images_addUserImage(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Business'),
+        'tnid'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Tenant'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
     $args = $rc['args'];
-    $args['business_id'] = 0;
+    $args['tnid'] = 0;
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'checkAccess');
-    $rc = ciniki_images_checkAccess($ciniki, $args['business_id'], 'ciniki.images.addUserImage'); 
+    $rc = ciniki_images_checkAccess($ciniki, $args['tnid'], 'ciniki.images.addUserImage'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -74,7 +74,7 @@ function ciniki_images_addUserImage(&$ciniki) {
     // Add the image into the database
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'insertFromUpload');
-    $rc = ciniki_images_insertFromUpload($ciniki, $args['business_id'], $ciniki['session']['user']['id'], 
+    $rc = ciniki_images_insertFromUpload($ciniki, $args['tnid'], $ciniki['session']['user']['id'], 
         $_FILES['uploadfile'], 1, $_FILES['uploadfile']['name'], '', 'no');
     // If a duplicate image is found, then use that id instead of uploading a new one
     if( $rc['stat'] != 'ok' && $rc['err']['code'] != 'ciniki.images.66' ) {
