@@ -125,14 +125,14 @@ function ciniki_images_imageEdit($ciniki) {
                         $thumb_crop_data = $width . ',' . $width . ',0,' . ($height-$width);
                     } elseif( $args['position'] == 'upleft' && isset($args['amount']) && $args['amount'] != '' ) {
                         $y += (($args['amount']/100) * $height);
-                        if( $y < 0 ) {
-                            $y = 0;
+                        if( $y > ($height-$width) ) {
+                            $y = ($height-$width);
                         }
                         $thumb_crop_data = $width . ',' . $width . ',0,' . $y;
                     } elseif( $args['position'] == 'downright' && isset($args['amount']) && $args['amount'] != '' ) {
                         $y -= (($args['amount']/100) * $height);
-                        if( $y > ($height-$width) ) {
-                            $y = ($height-$widht);
+                        if( $y < 0 ) {
+                            $y = 0;
                         }
                         $thumb_crop_data = $width . ',' . $width . ',0,' . $y;
                     }
@@ -146,14 +146,14 @@ function ciniki_images_imageEdit($ciniki) {
                         $thumb_crop_data = $height . ',' . $height . ',' . ($width-$height) . ',0';
                     } elseif( $args['position'] == 'upleft' && isset($args['amount']) && $args['amount'] != '' ) {
                         $x += (($args['amount']/100) * $width);
-                        if( $x < 0 ) {
-                            $x = 0;
+                        if( $x > ($width-$height) ) {
+                            $x = ($width-$height);
                         }
                         $thumb_crop_data = $height . ',' . $height . ',' . $x . ',0';
                     } elseif( $args['position'] == 'downright' && isset($args['amount']) && $args['amount'] != '' ) {
                         $x -= (($args['amount']/100) * $width);
-                        if( $x > ($width-$height) ) {
-                            $x = ($width-$height);
+                        if( $x < 0 ) {
+                            $x = 0;
                         }
                         $thumb_crop_data = $height . ',' . $height . ',' . $x . ',0';
                     }
