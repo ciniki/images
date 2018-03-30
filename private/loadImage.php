@@ -114,7 +114,6 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
         // Crop
         if( $result['row']['action'] == 1 && $dummy_image == 'no' ) {
             $params = explode(',', $result['row']['params']);
-            error_log('crop: ' . $result['row']['params']);
             $image->cropImage($params[0], $params[1], $params[2], $params[3]);
         }
 
