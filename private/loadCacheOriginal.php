@@ -149,7 +149,7 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $tnid, $image_id, $maxwidth, 
         // Check if the width is large than allowed and then double check if height will be larger
         //
         if( $maxwidth >= $image->getImageWidth() ) {
-            if( (($maxwidth/$image->getImageWidth()) * $image->getImageHeight()) > $maxheight ) {
+            if( $maxheight > 0 && (($maxwidth/$image->getImageWidth()) * $image->getImageHeight()) > $maxheight ) {
                 $image->scaleImage(0, $maxheight);
             } else {
                 $image->scaleImage($maxwidth, 0);
@@ -157,8 +157,9 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $tnid, $image_id, $maxwidth, 
         } 
         //
         // Height must be larger dimension, check if width will be ok
+        //
         else {
-            if( (($maxheight/$image->getImageHeight()) * $image->getImageWidth()) > $maxwidth ) {
+            if( $maxwidth > 0 && (($maxheight/$image->getImageHeight()) * $image->getImageWidth()) > $maxwidth ) {
                 $image->scaleImage($maxwidth, 0);
             } else {
                 $image->scaleImage(0, $maxheight);
