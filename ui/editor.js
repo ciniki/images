@@ -75,7 +75,7 @@ function ciniki_images_editor() {
         //
         var appContainer = M.createContainer(appPrefix, 'ciniki_images_editor', 'yes');
         if( appContainer == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         } 
 
