@@ -34,7 +34,10 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
     //
     // Get the last updated
     //
-    $strsql = "SELECT ciniki_images.uuid, ciniki_images.title, UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated "
+    $strsql = "SELECT ciniki_images.uuid, "
+        . "ciniki_images.title, "
+        . "ciniki_images.original_filename, "
+        . "UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated "
         . "FROM ciniki_images, ciniki_image_versions "
         . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
         . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
@@ -121,6 +124,6 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
         $result = ciniki_core_dbFetchHashRow($ciniki, $dh);
     }
 
-    return array('stat'=>'ok', 'image'=>$image);
+    return array('stat'=>'ok', 'image'=>$image, 'original_filename'=>$img['original_filename']);
 }
 ?>

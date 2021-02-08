@@ -65,8 +65,6 @@ function ciniki_images_hooks_insertFromImagick(&$ciniki, $tnid, $args) {
         $args['name'] = preg_replace('/(.jpg|.png|.gif|.tiff|.bmp)/i', '', $args['name']);
     }
 
-    $checksum = crc32('' . $args['image']->getImageBlob());
-
     //
     // Get the type of photo (jpg, png, gif, tiff, bmp, etc)
     //
@@ -108,6 +106,12 @@ function ciniki_images_hooks_insertFromImagick(&$ciniki, $tnid, $args) {
                 break;
         }
         $args['image']->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
+    }
+
+    if( isset($args['checksum']) ) {
+        $checksum = $args['checksum'];
+    } else {
+        $checksum = crc32('' . $args['image']->getImageBlob());
     }
 
     //

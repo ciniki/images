@@ -54,8 +54,6 @@ function ciniki_images_insertFromUpload(&$ciniki, $tnid, $user_id, $upload_file,
         $name = preg_replace('/(.jpg|.png|.gif|.tiff|.bmp)/i', '', $name);
     }
 
-    $checksum = crc32('' . $image->getImageBlob());
-
     //
     // Get the type of photo (jpg, png, gif, tiff, bmp, etc)
     //
@@ -97,6 +95,8 @@ function ciniki_images_insertFromUpload(&$ciniki, $tnid, $user_id, $upload_file,
         }
         $image->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
     }
+
+    $checksum = crc32('' . $image->getImageBlob());
 
     //
     // Load photo into blob
