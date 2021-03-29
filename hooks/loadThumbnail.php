@@ -52,6 +52,8 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $tnid, $args) {
         . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
         . "AND ciniki_images.id = ciniki_image_versions.image_id "
         . "AND ciniki_image_versions.version = 'thumbnail' "
+        . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
+        . "AND ciniki_image_versions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
     if( $rc['stat'] != 'ok' ) {
@@ -113,6 +115,8 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $tnid, $args) {
             . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
             . "AND ciniki_images.id = ciniki_image_versions.image_id "
             . "AND ciniki_image_versions.version = 'thumbnail' "
+            . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
+            . "AND ciniki_image_versions.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.images', 'image');  
         if( $rc['stat'] != 'ok' ) {
@@ -143,6 +147,7 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $tnid, $args) {
         . "FROM ciniki_image_actions "
         . "WHERE image_id = '" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "' "
         . "AND version = 'thumbnail' "
+        . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "ORDER BY sequence ";
     $rc = ciniki_core_dbQuery($ciniki, $strsql, 'ciniki.images');   
     if( $rc['stat'] != 'ok' ) {

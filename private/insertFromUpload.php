@@ -119,9 +119,9 @@ function ciniki_images_insertFromUpload(&$ciniki, $tnid, $user_id, $upload_file,
     //
     // Check if there is an image that exists, and that the force flag has not been set
     //
-    if( isset($rc['images']) && $force_duplicate != 'yes' ) {
+    if( isset($rc['rows']) && count($rc['rows']) > 0 && $force_duplicate != 'yes' ) {
         // Return the ID incase the calling script wants to use the existing image
-        return array('stat'=>'fail', 'id'=>$rc['images']['id'], 'err'=>array('code'=>'ciniki.images.66', 'msg'=>'Duplicate image'));
+        return array('stat'=>'fail', 'id'=>$rc['rows'][0]['id'], 'err'=>array('code'=>'ciniki.images.66', 'msg'=>'Duplicate image'));
     }
 
     //
