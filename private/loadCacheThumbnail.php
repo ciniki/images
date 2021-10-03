@@ -80,9 +80,15 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $tnid, $image_id, $maxlength
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuery');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbFetchHashRow');
 
+    $image = null;
     if( file_exists($storage_filename) ) {
-        $image = new Imagick($storage_filename);
-    } else {
+        try {
+            $image = new Imagick($storage_filename);
+        } catch(Exception $e) {
+            unlink($storage_filename);
+        }
+    } 
+    if( $image == null ) {
         //
         // Get the image data from the database for this version
         //
