@@ -16,7 +16,7 @@
 // Returns
 // -------
 //
-function ciniki_images_loadCacheOriginal(&$ciniki, $tnid, $image_id, $maxwidth, $maxheight, $fmt='') {
+function ciniki_images_loadCacheJPEG(&$ciniki, $tnid, $image_id, $maxwidth, $maxheight) {
 
     //
     // Get the tenant cache directory
@@ -59,15 +59,10 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $tnid, $image_id, $maxwidth, 
     $img = $rc['image'];
     $img_uuid = $rc['image']['uuid'];
 
-    $extension = 'jpg';
-    if( preg_match("/\.png$/", $img['original_filename']) ) {
-        $extension = 'png';
-    }
-
     $storage_filename = $tenant_storage_dir . '/ciniki.images/'
         . $img_uuid[0] . '/' . $img_uuid;
     $cache_filename = $tenant_cache_dir . '/ciniki.images/'
-        . $img_uuid[0] . '/' . $img_uuid . '/o' . $maxwidth . '-' . $maxheight . '.' . $extension;
+        . $img_uuid[0] . '/' . $img_uuid . '/o' . $maxwidth . '-' . $maxheight . '.jpg';
 
     //
     // Check if cached version is there, and there hasn't been any updates
@@ -118,6 +113,8 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $tnid, $image_id, $maxwidth, 
             $image->newImage(500, 500, "#ffffff");
         }
     }
+
+    $image->setImageFormat("jpeg");
 
     //
     // Get the actions to be applied

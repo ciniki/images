@@ -67,7 +67,6 @@ function ciniki_images_get($ciniki) {
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
-
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $rc['last_updated']) . ' GMT', true, 200);
     if( isset($ciniki['request']['args']['attachment']) && $ciniki['request']['args']['attachment'] == 'yes' ) {
         header('Content-Disposition: attachment; filename="' . $rc['original_filename'] . '"');
