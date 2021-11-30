@@ -71,6 +71,6 @@ function ciniki_images_hooks_loadOriginal($ciniki, $tnid, $args) {
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.158', 'msg'=>'Unable to render image'));
     }
 
-    return array('stat'=>'ok', 'image'=>$image, 'original_filename'=>$img['original_filename'], 'checksum'=>$img['checksum']);
+    return array('stat'=>'ok', 'image'=>$image, 'original_filename'=>$img['original_filename'], 'last_updated'=>$img['last_updated'], 'checksum'=>$img['checksum']);
 }
 ?>
