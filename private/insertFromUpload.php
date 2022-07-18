@@ -72,6 +72,8 @@ function ciniki_images_insertFromUpload(&$ciniki, $tnid, $user_id, $upload_file,
 //        $exif = read_exif_data($upload_file['tmp_name']);
     } elseif( $format == 'bmp' ) {
         $type = 5;
+    } elseif( $format == 'svg' ) {
+        $type = 6;
     } else {
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.64', 'msg'=>'Invalid format' . $format));
     }
@@ -170,12 +172,16 @@ function ciniki_images_insertFromUpload(&$ciniki, $tnid, $user_id, $upload_file,
     //
     // Write the image to storage
     //
-    $h = fopen($storage_filename, 'w');
-    if( $h ) {
-        fwrite($h, $image->getImageBlob());
-        fclose($h);
+    if( $type == 6 ) {
+        copy($upload_file['tmp_name'], $storage_filename);
     } else {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.69', 'msg'=>'Unable to add image'));
+        $h = fopen($storage_filename, 'w');
+        if( $h ) {
+            fwrite($h, $image->getImageBlob());
+            fclose($h);
+        } else {
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.69', 'msg'=>'Unable to add image'));
+        }
     }
 
     //

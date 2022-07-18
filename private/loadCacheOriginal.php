@@ -41,7 +41,10 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $tnid, $image_id, $maxwidth, 
     //
     // Get the last updated timestamp
     //
-    $strsql = "SELECT ciniki_images.uuid, ciniki_images.title, ciniki_images.original_filename, "
+    $strsql = "SELECT ciniki_images.uuid, "
+        . "ciniki_images.title, "
+        . "ciniki_images.original_filename, "
+        . "ciniki_images.type, "
         . "IF(ciniki_images.last_updated > ciniki_image_versions.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_image_versions.last_updated)) AS last_updated "
         . "FROM ciniki_images, ciniki_image_versions "
         . "WHERE ciniki_images.id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' "
@@ -59,13 +62,21 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $tnid, $image_id, $maxwidth, 
     $img = $rc['image'];
     $img_uuid = $rc['image']['uuid'];
 
+    $storage_filename = $tenant_storage_dir . '/ciniki.images/'
+        . $img_uuid[0] . '/' . $img_uuid;
+
+    //
+    // Handle svg differently
+    //
+    if( $img['type'] == 6 ) {
+        return array('stat'=>'ok', 'image'=>file_get_contents($storage_filename), 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename'], 'type'=>$img['type']);
+    }
+
     $extension = 'jpg';
     if( preg_match("/\.png$/", $img['original_filename']) ) {
         $extension = 'png';
     }
 
-    $storage_filename = $tenant_storage_dir . '/ciniki.images/'
-        . $img_uuid[0] . '/' . $img_uuid;
     $cache_filename = $tenant_cache_dir . '/ciniki.images/'
         . $img_uuid[0] . '/' . $img_uuid . '/o' . $maxwidth . '-' . $maxheight . '.' . $extension;
 
@@ -88,10 +99,14 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $tnid, $image_id, $maxwidth, 
 
     $image = null;
     if( file_exists($storage_filename) ) {
-        try {
-            $image = new Imagick($storage_filename);
-        } catch(Exception $e) {
-            unlink($storage_filename);
+        if( $img['type'] == 6 ) {
+            $image = file_get_contents($storage_filename);
+        } else {
+            try {
+                $image = new Imagick($storage_filename);
+            } catch(Exception $e) {
+                unlink($storage_filename);
+            }
         }
     } 
     if( $image == null ) {
@@ -200,6 +215,6 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $tnid, $image_id, $maxwidth, 
         touch($cache_filename, $dt->getTimestamp());
     }
 
-    return array('stat'=>'ok', 'image'=>$image->getImageBlob(), 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename']);
+    return array('stat'=>'ok', 'image'=>$image->getImageBlob(), 'last_updated'=>$img['last_updated'], 'original_filename'=>$img['original_filename'], 'type'=>$img['type']);
 }
 ?>

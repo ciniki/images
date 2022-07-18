@@ -36,6 +36,7 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
     //
     $strsql = "SELECT ciniki_images.uuid, "
         . "ciniki_images.title, "
+        . "ciniki_images.type, "
         . "ciniki_images.original_filename, "
         . "UNIX_TIMESTAMP(ciniki_image_versions.last_updated) as last_updated "
         . "FROM ciniki_images, ciniki_image_versions "
@@ -56,6 +57,10 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
     $storage_filename = $tenant_storage_dir . '/ciniki.images/'
         . $img['uuid'][0] . '/' . $img['uuid'];
 //    $last_updated = $img['last_updated'];
+
+    if( $img['type'] == 6 ) {
+        return array('stat'=>'ok', 'image'=>file_get_contents($storage_filename), 'original_filename'=>$img['original_filename']);
+    }
 
     $dummy_image = 'no';
     if( file_exists($storage_filename) ) {

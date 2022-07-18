@@ -71,7 +71,11 @@ function ciniki_images_get($ciniki) {
     if( isset($ciniki['request']['args']['attachment']) && $ciniki['request']['args']['attachment'] == 'yes' ) {
         header('Content-Disposition: attachment; filename="' . $rc['original_filename'] . '"');
     }
-    header("Content-type: image/jpeg"); 
+    if( isset($rc['type']) && $rc['type'] == 6 ) {
+        header("Content-type: image/svg+xml"); 
+    } else {
+        header("Content-type: image/jpeg"); 
+    }
 
     echo $rc['image'];
     exit();
