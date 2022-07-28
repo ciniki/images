@@ -75,7 +75,7 @@ function ciniki_images_insertFromUpload(&$ciniki, $tnid, $user_id, $upload_file,
     } elseif( $format == 'svg' ) {
         $type = 6;
     } else {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.64', 'msg'=>'Invalid format' . $format));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.64', 'msg'=>'Invalid format ' . $format));
     }
 
     //
