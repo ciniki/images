@@ -59,7 +59,7 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
 //    $last_updated = $img['last_updated'];
 
     if( $img['type'] == 6 ) {
-        return array('stat'=>'ok', 'image'=>file_get_contents($storage_filename), 'original_filename'=>$img['original_filename']);
+        return array('stat'=>'ok', 'type'=>$img['type'], 'image'=>file_get_contents($storage_filename), 'original_filename'=>$img['original_filename']);
     }
 
     $dummy_image = 'no';
@@ -129,6 +129,6 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
         $result = ciniki_core_dbFetchHashRow($ciniki, $dh);
     }
 
-    return array('stat'=>'ok', 'image'=>$image, 'original_filename'=>$img['original_filename']);
+    return array('stat'=>'ok', 'type'=>$img['type'], 'image'=>$image, 'original_filename'=>$img['original_filename']);
 }
 ?>
