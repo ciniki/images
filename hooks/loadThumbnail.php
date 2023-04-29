@@ -160,7 +160,11 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $tnid, $args) {
         // Crop
         if( $result['row']['action'] == 1 ) {
             $params = explode(',', $result['row']['params']);
-            $image->cropImage($params[0], $params[1], $params[2], $params[3]);
+            try {
+                $image->cropImage($params[0], $params[1], $params[2], $params[3]);
+            } catch (Exception $e) {
+                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.171', 'msg'=>'Unable to crop image', 'err'=>$rc['err']));
+            }
         }
 
         // Grab the next row
