@@ -30,7 +30,7 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
         return $rc;
     }
     $tenant_storage_dir = $rc['storage_dir'];
-    
+
     //
     // Get the last updated
     //
@@ -124,7 +124,13 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
             try {
                 $image->cropImage($params[0], $params[1], $params[2], $params[3]);
             } catch (Exception $e) {
-                error_log(print_r($e, true));
+                error_log("Exception cropping image: $image_id");
+                $width = $image->getImageWidth();
+                $height = $image->getImageHeight();
+                if( $width > 5000 || $height > 5000 ) {
+                    $image->scaleImage(floor($width/2), floor($height/2));
+                    $image->cropImage(floor($params[0]/2), floor($params[1]/2), floor($params[2]/2), floor($params[3]/2));
+                }
             } 
         }
 
