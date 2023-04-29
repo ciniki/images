@@ -166,7 +166,11 @@ function ciniki_images_hooks_loadBase64Thumbnails(&$ciniki, $tnid, $args) {
             // Crop
             if( $action['action'] == 1 ) {
                 $params = explode(',', $action['params']);
-                $imagek->cropImage($params[0], $params[1], $params[2], $params[3]);
+                try {
+                    $imagek->cropImage($params[0], $params[1], $params[2], $params[3]);
+                } catch (Exception $e) {
+                    error_log(print_r($e, true));
+                }
             }
         }
 

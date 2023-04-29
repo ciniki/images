@@ -64,7 +64,6 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
 
     $dummy_image = 'no';
     if( file_exists($storage_filename) ) {
-//        $image = new Imagick($storage_filename);
         try {
             $image = new Imagick($storage_filename);
         } catch (Exception $e) {
@@ -122,7 +121,11 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
         // Crop
         if( $result['row']['action'] == 1 && $dummy_image == 'no' ) {
             $params = explode(',', $result['row']['params']);
-            $image->cropImage($params[0], $params[1], $params[2], $params[3]);
+            try {
+                $image->cropImage($params[0], $params[1], $params[2], $params[3]);
+            } catch (Exception $e) {
+                error_log(print_r($e, true));
+            } 
         }
 
         // Grab the next row
