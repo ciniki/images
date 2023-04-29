@@ -64,7 +64,7 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
 
     $dummy_image = 'no';
     if( file_exists($storage_filename) ) {
-        $image = new Imagick($storage_filename);
+//        $image = new Imagick($storage_filename);
         try {
             $image = new Imagick($storage_filename);
         } catch (Exception $e) {
