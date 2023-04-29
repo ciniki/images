@@ -163,7 +163,7 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $tnid, $args) {
             try {
                 $image->cropImage($params[0], $params[1], $params[2], $params[3]);
             } catch (Exception $e) {
-                error_log("Exception cropping image: $image_id");
+                error_log("Exception cropping image: {$img['image_id']}");
                 $width = $image->getImageWidth();
                 $height = $image->getImageHeight();
                 if( $width > 2000 || $height > 2000 ) {
