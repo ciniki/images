@@ -214,6 +214,9 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $tnid, $args) {
         touch($cache_filename, $dt->getTimestamp());
     }
 
-    return array('stat'=>'ok', 'image'=>$image->getImageBlob());
+    $blob = $image->getImageBlob();
+    $image->clear();
+
+    return array('stat'=>'ok', 'image'=>$blob);
 }
 ?>
