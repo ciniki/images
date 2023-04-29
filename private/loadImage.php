@@ -99,6 +99,7 @@ function ciniki_images_loadImage($ciniki, $tnid, $image_id, $version) {
         }
     }
 
+    $image->setFormat("jpeg");
     $image->setImageFormat("jpeg");
 
     //
