@@ -138,7 +138,6 @@ function ciniki_images_hooks_loadThumbnail(&$ciniki, $tnid, $args) {
 //      $last_updated = $rc['image']['last_updated'];
     }
 
-//    $image->setFormat("jpeg");
     $image->setImageFormat("jpeg");
 
     //
