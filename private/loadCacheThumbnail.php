@@ -139,7 +139,16 @@ function ciniki_images_loadCacheThumbnail(&$ciniki, $tnid, $image_id, $maxlength
         // Crop
         if( $result['row']['action'] == 1 ) {
             $params = explode(',', $result['row']['params']);
-            $image->cropImage($params[0], $params[1], $params[2], $params[3]);
+            try {
+                $image->cropImage($params[0], $params[1], $params[2], $params[3]);
+            } catch(Exception $e) {
+                $image->newImage(1000, 1000, "#ffffff");
+                $image->setImageFormat("jpeg");
+                $draw = new ImagickDraw();
+                $draw->setFillColor('black');
+                $draw->setFontSize(275);
+                $image->annotateImage($draw, 50, 575, 0, "ERROR");
+            }
         }
 
         // Grab the next row
