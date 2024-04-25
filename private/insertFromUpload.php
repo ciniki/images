@@ -46,18 +46,19 @@ function ciniki_images_insertFromUpload(&$ciniki, $tnid, $user_id, $upload_file,
     if( $name == null || $name == '' ) {
         $name = $original_filename;
 
-        if( preg_match('/(IMG|DSC)_[0-9][0-9][0-9][0-9]\.(jpg|gif|tiff|bmp|png)/', $name, $matches) ) {
+        if( preg_match('/(IMG|DSC)_[0-9][0-9][0-9][0-9]\.(jpg|gif|tiff|bmp|png|webp)/', $name, $matches) ) {
             // Switch to blank name
             $name = '';
         }
 
-        $name = preg_replace('/(.jpg|.png|.gif|.tiff|.bmp)/i', '', $name);
+        $name = preg_replace('/(.jpg|.png|.gif|.tiff|.bmp.webp)/i', '', $name);
     }
 
     //
     // Get the type of photo (jpg, png, gif, tiff, bmp, etc)
     //
     $format = strtolower($image->getImageFormat());
+
 //    $exif = array();
     $type = 0;
     if( $format == 'jpeg' ) {
@@ -74,6 +75,8 @@ function ciniki_images_insertFromUpload(&$ciniki, $tnid, $user_id, $upload_file,
         $type = 5;
     } elseif( $format == 'svg' ) {
         $type = 6;
+    } elseif( $format == 'webp' ) {
+        $type = 7;
     } else {
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.images.64', 'msg'=>'Invalid format ' . $format));
     }

@@ -75,6 +75,8 @@ function ciniki_images_loadCacheOriginal(&$ciniki, $tnid, $image_id, $maxwidth, 
     $extension = 'jpg';
     if( preg_match("/\.png$/", $img['original_filename']) ) {
         $extension = 'png';
+    } elseif( preg_match("/\.webp$/", $img['original_filename']) ) {
+        $extension = 'webp';
     }
 
     $cache_filename = $tenant_cache_dir . '/ciniki.images/'

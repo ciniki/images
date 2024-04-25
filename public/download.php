@@ -73,6 +73,8 @@ function ciniki_images_download($ciniki) {
     if( isset($ciniki['request']['args']['attachment']) && $ciniki['request']['args']['attachment'] == 'yes' ) {
         if( preg_match("/\.png$/", $rc['original_filename']) ) {
             header("Content-type: image/png"); 
+        } else if( preg_match("/\.webp$/", $rc['original_filename']) ) {
+            header("Content-type: image/webp"); 
         } else {
             header("Content-type: image/jpeg"); 
         }

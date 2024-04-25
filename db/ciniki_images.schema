@@ -54,6 +54,7 @@
 #                       4 - local tiff *future*
 #                       5 - local bmp *future*
 #                       6 - local svg 
+#                       7 - local webp
 #                       128 - flickr *future
 #                       129 - smugmug *future
 #                       130 - picassa *future

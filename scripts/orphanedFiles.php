@@ -40,7 +40,7 @@ $strsql = "SELECT "
     . "";
 ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
 $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.images', array(
-    array('container'=>'tenants', 'fname'=>'tenant_uuid', 'fields'=>array('uuid'=>'tenant_uuid')),
+    array('container'=>'tenants', 'fname'=>'tenant_uuid', 'fields'=>array('uuid'=>'tenant_uuid', 'name')),
     array('container'=>'images', 'fname'=>'image_uuid', 'fields'=>array('uuid'=>'image_uuid')),
     ));
 if( $rc['stat'] != 'ok' ) {
